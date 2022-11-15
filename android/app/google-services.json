@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "264882387609",
+    "project_id": "prayup-9efba",
+    "storage_bucket": "prayup-9efba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264882387609:android:e17a73a7979bfe8c8e1608",
+        "android_client_info": {
+          "package_name": "com.allied.prayup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264882387609-um7a0imie1pvp0p65fil199dbqglhddf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2QjU_PpvU8CLwn23nIb3JEA5BNaNymXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264882387609-um7a0imie1pvp0p65fil199dbqglhddf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
