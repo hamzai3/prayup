@@ -203,6 +203,18 @@ class Constants {
     return false;
   }
 
+  Future updatedRecord(count, node, mydoc_id) async {
+    CollectionReference _collectionRef =
+        FirebaseFirestore.instance.collection('users');
+    // QuerySnapshot querySnapshot = await _collectionRef.get();
+    // Get data from docs and convert map to List
+
+    await _collectionRef
+        .doc(mydoc_id)
+        .update({node: count}); // <-- Updated data
+    return false;
+  }
+
   Future updatedPremium(mydoc_id) async {
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection('users');

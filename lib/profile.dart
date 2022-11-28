@@ -334,7 +334,7 @@ class _ProfileState extends State<Profile> {
                       color: c.getColor("grey")),
                 ),
                 subtitle: AutoSizeText(
-                  "Listen to 10 Free Songs\nDownload any 2 prayers",
+                  "Subscribe for 3 months - Listen to 21 prayers & up to 9 downloads\n(Listen up to 7 Prayers/month)\n(Download up to 3 Prayers/month",
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: c.getFontSizeXS(context) - 3,
@@ -385,7 +385,7 @@ class _ProfileState extends State<Profile> {
                       color: c.getColor("grey")),
                 ),
                 subtitle: AutoSizeText(
-                  "Listen to 20 Free Songs\nDownload any 5 prayers",
+                  "Subscribe for 6 Months - Listen to 108 prayers & up to 30  downloads\n(Listen up to 18 Prayers/month)\n(Download up to 5 Prayers/month",
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: c.getFontSizeXS(context) - 3,
@@ -446,7 +446,7 @@ class _ProfileState extends State<Profile> {
                   // });
                 },
                 title: AutoSizeText(
-                  "Subscribe for 6 Months",
+                  "Subscribe for 12 Months",
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: c.getFontSizeLabel(context) - 2,
@@ -454,7 +454,7 @@ class _ProfileState extends State<Profile> {
                       color: c.getColor("grey")),
                 ),
                 subtitle: AutoSizeText(
-                  "Listen to Unlimited Free Songs\nDownload any 10 prayers",
+                  "Subscribe for 12 months - Listen unlimited prayers & up to 84 downloads\n(Listen unlimited Prayers)\n(Download up to 7 Prayers/month",
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: c.getFontSizeXS(context) - 3,
@@ -628,43 +628,41 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                    !isPremimum
-                        ? Container()
-                        : Container(
-                            margin: const EdgeInsets.all(5.0),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                ),
-                              ),
-                            ),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (_) => RequestedPrayers()));
-                              },
-                              leading: Icon(
-                                Icons.music_note,
-                                color: c.whiteColor(),
-                              ),
-                              title: AutoSizeText(
-                                "Prayer Requests",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    fontSize: c.getFontSizeLabel(context) - 2,
-                                    // fontWeight: FontWeight.w800,
-                                    color: c.getColor("grey")),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios,
-                                color: c.whiteColor(),
-                              ),
-                            ),
+                    Container(
+                      margin: const EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.white,
+                            width: 1.0,
                           ),
+                        ),
+                      ),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (_) => RequestedPrayers()));
+                        },
+                        leading: Icon(
+                          Icons.music_note,
+                          color: c.whiteColor(),
+                        ),
+                        title: AutoSizeText(
+                          "Requested Prayers",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontSize: c.getFontSizeLabel(context) - 2,
+                              // fontWeight: FontWeight.w800,
+                              color: c.getColor("grey")),
+                        ),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: c.whiteColor(),
+                        ),
+                      ),
+                    ),
                     !isPremimum
                         ? Container()
                         : Container(
@@ -825,7 +823,7 @@ class _ProfileState extends State<Profile> {
                         Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            "Version 1.0.5",
+                            "Version 1.0.7",
                             style: TextStyle(
                               color: c.getColor("grey"),
                               fontSize: c.getFontSizeLabel(context) - 2,
@@ -917,69 +915,93 @@ class _ProfileState extends State<Profile> {
         print("Payment Done");
 
         if (mode == "ONE") {
-          FirebaseFirestore.instance.collection('subscribe').add({
-            'email': username.toString(),
-            'months': "3",
-            'free': "10",
-            'download': "2",
-            'activated_on': now.year.toString() +
-                "/" +
-                now.month.toString() +
-                "/" +
-                now.day.toString(),
-          });
+          // FirebaseFirestore.instance.collection('subscribe').add({
+          //   'email': username.toString(),
+          //   'months': "3",
+          //   'play': "0",
+          //   "play_limit":7,
+          //   "download_limit":3,
+          //   'download': "0",
+          //   'activated_on': now.year.toString() +
+          //       "/" +
+          //       now.month.toString() +
+          //       "/" +
+          //       now.day.toString(),
+          // });
           c.showInSnackBar(context,
               "Congratulations, Subscription for 3 months is activated");
           setState(() {});
-          c.updatedPremium(mydoc_id);
-          c.updatedPlay("10", mydoc_id);
-          c.updatedDownload("2", mydoc_id);
+          c.updatedRecord("YES", "premium", mydoc_id);
+          c.updatedRecord(DateTime.now().toString(), "subscribed_on", mydoc_id);
+          c.updatedRecord("8", "play_limit", mydoc_id);
+          c.updatedRecord("3", "download_limit", mydoc_id);
+          c.updatedRecord("90", "for_days", mydoc_id);
+          c.updatedRecord("3 Months", "plan", mydoc_id);
+          c.updatedRecord("0", "play", mydoc_id);
+          c.updatedRecord("0", "download", mydoc_id);
+          // c.updatedPremium(mydoc_id);
+          // c.updatedPlay("10", mydoc_id);
+          // c.updatedDownload("2", mydoc_id);
           Future.delayed(Duration(seconds: 1), () {
             Navigator.of(context).pop();
             Navigator.push(
                 context, CupertinoPageRoute(builder: (_) => Profile()));
           });
         } else if (mode == "TWO") {
-          FirebaseFirestore.instance.collection('subscribe').add({
-            'email': username.toString(),
-            'months': "6",
-            'free': "20",
-            'download': "5",
-            'activated_on': now.year.toString() +
-                "/" +
-                now.month.toString() +
-                "/" +
-                now.day.toString(),
-          });
+          // FirebaseFirestore.instance.collection('subscribe').add({
+          //   'email': username.toString(),
+          //   'months': "6",
+          //   'free': "20",
+          //   'download': "5",
+          //   'activated_on': now.year.toString() +
+          //       "/" +
+          //       now.month.toString() +
+          //       "/" +
+          //       now.day.toString(),
+          // });
           c.showInSnackBar(context,
               "Congratulations, Subscription for 6 months is activated");
           setState(() {});
-          c.updatedPremium(mydoc_id);
-          c.updatedPlay("20", mydoc_id);
-          c.updatedDownload("5", mydoc_id);
+
+          c.updatedRecord("YES", "premium", mydoc_id);
+          c.updatedRecord(DateTime.now().toString(), "subscribed_on", mydoc_id);
+          c.updatedRecord("18", "play_limit", mydoc_id);
+          c.updatedRecord("5", "download_limit", mydoc_id);
+          c.updatedRecord("180", "for_days", mydoc_id);
+          c.updatedRecord("6 Months", "plan", mydoc_id);
+          c.updatedRecord("0", "play", mydoc_id);
+          c.updatedRecord("0", "download", mydoc_id);
           Future.delayed(Duration(seconds: 1), () {
             Navigator.of(context).pop();
             Navigator.push(
                 context, CupertinoPageRoute(builder: (_) => Profile()));
           });
         } else if (mode == "TWO") {
-          FirebaseFirestore.instance.collection('subscribe').add({
-            'email': username.toString(),
-            'months': "12",
-            'free': "100000",
-            'download': "10",
-            'activated_on': now.year.toString() +
-                "/" +
-                now.month.toString() +
-                "/" +
-                now.day.toString(),
-          });
+          // FirebaseFirestore.instance.collection('subscribe').add({
+          //   'email': username.toString(),
+          //   'months': "12",
+          //   'free': "100000",
+          //   'download': "10",
+          //   'activated_on': now.year.toString() +
+          //       "/" +
+          //       now.month.toString() +
+          //       "/" +
+          //       now.day.toString(),
+          // });
           c.showInSnackBar(context,
               "Congratulations, Subscription for 12 months is activated");
           setState(() {});
-          c.updatedPremium(mydoc_id);
-          c.updatedPlay("100000", mydoc_id);
-          c.updatedDownload("10", mydoc_id);
+          // c.updatedPremium(mydoc_id);
+          // c.updatedPlay("100000", mydoc_id);
+          // c.updatedDownload("10", mydoc_id);
+          c.updatedRecord("YES", "premium", mydoc_id);
+          c.updatedRecord(DateTime.now().toString(), "subscribed_on", mydoc_id);
+          c.updatedRecord("999999", "play_limit", mydoc_id);
+          c.updatedRecord("7", "download_limit", mydoc_id);
+          c.updatedRecord("365", "for_days", mydoc_id);
+          c.updatedRecord("12 Months", "plan", mydoc_id);
+          c.updatedRecord("0", "play", mydoc_id);
+          c.updatedRecord("0", "download", mydoc_id);
           Future.delayed(Duration(seconds: 1), () {
             Navigator.of(context).pop();
             Navigator.push(

@@ -69,6 +69,12 @@ class _HomeState extends State<Home> {
               play = int.parse(snapshot['play'].toString());
               download = int.parse(snapshot['download'].toString());
               isPremimum = snapshot['premium'] == "NO" ? false : true;
+              subscribed_on =
+                  DateTime.parse(snapshot['subscribed_on'].toString());
+              mon_donwload_limit =
+                  int.parse(snapshot['download_limit'].toString());
+              mon_play_limit = int.parse(snapshot['play_limit'].toString());
+              for_days = int.parse(snapshot['for_days'].toString());
             });
           }
         });
@@ -87,6 +93,8 @@ class _HomeState extends State<Home> {
   var username;
   Random random = new Random();
   int play = 0, download = 0;
+  late DateTime subscribed_on;
+  int for_days = 0, mon_play_limit = 0, mon_donwload_limit = 0;
   @override
   void initState() {
     super.initState();
@@ -340,7 +348,7 @@ class _HomeState extends State<Home> {
                                 size: Size.fromRadius(c.deviceWidth(context) *
                                     0.1), // Image radius
                                 child: Image.asset(
-                                  "assets/slider/${(random.nextInt(4) + 1)}.png",
+                                  "assets/banner/${(random.nextInt(4) + 1)}.png",
                                 ),
                               ),
                             ),
@@ -403,57 +411,81 @@ class _HomeState extends State<Home> {
                                           "Upgrade your account to access download feature\nOr pay \$9.99 to download this prayer",
                                           allData[j]);
                                     } else {
-                                      print("DSonloads is $download");
-                                      if (download > 0) {
-                                        c.showInSnackBar(context,
-                                            "Prayer is being downloaded and it will be saved in My Downloads");
-                                        c
-                                            .download1(
-                                                dio,
-                                                allData[j]['url'],
-                                                '/' +
-                                                    allData[j]['album']
-                                                        .toString()
-                                                        .replaceAll(" ", "_") +
-                                                    ".mp3")
-                                            .then((value) {
-                                          print("downloaded to $value");
-
-                                          //  var rec = '{"downloaded":}';
-                                          var rec =
-                                              '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
-                                          c
-                                              .getshared("downlaods")
-                                              .then((value) {
-                                            if (value != 'null') {
-                                              value = value + rec;
-                                              c.setshared("downlaods", value);
+                                      var diff = DateTime.now()
+                                          .difference(subscribed_on)
+                                          .inDays;
+                                      if (diff <
+                                          int.parse(for_days.toString())) {
+                                        var limitextender = 1;
+                                        for (int i = 30; i < 365; i = i + 30) {
+                                          print("\n\n\ Loop now is $i");
+                                          if (diff < i) {
+                                            if (download >=
+                                                (mon_donwload_limit *
+                                                    limitextender)) {
+                                              //8>7
+                                              c.showInSnackBar(context,
+                                                  "You have reached maximum download limit for this month");
+                                              showAlert(
+                                                  context,
+                                                  "599",
+                                                  "Maximum download limit reached!\nPay \$5.99 to download this prayer",
+                                                  allData[j]);
+                                              break;
                                             } else {
-                                              c.setshared("downlaods", rec);
-                                            }
-                                          });
-                                          c
-                                              .getshared("downlaods")
-                                              .then((value) {
-                                            print(
-                                                "Here affter downlaodsa $value");
-                                          });
-                                          c.updatedDownload(
-                                              download - 1, doc_id);
+                                              //this will run
+                                              c
+                                                  .updatedDownload(
+                                                      download + 1, doc_id)
+                                                  .then((value) {
+                                                c.showInSnackBar(context,
+                                                    "Prayer is being downloaded and it will be saved in My Downloads");
+                                                c
+                                                    .download1(
+                                                        dio,
+                                                        allData[j]['url'],
+                                                        '/' +
+                                                            allData[j]['album']
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    " ", "_") +
+                                                            ".mp3")
+                                                    .then((value) {
+                                                  print("downloaded to $value");
 
-                                          // c.setshared("Downloaded1", rec);
-                                        });
-                                      } else {
-                                        c.showInSnackBar(context,
-                                            "You have reached maximum download limit");
-                                        showAlert(
-                                            context,
-                                            "599",
-                                            "Maximum download limit reached!\nPay \$5.99 to download this prayer",
-                                            allData[j]);
+                                                  //  var rec = '{"downloaded":}';
+                                                  var rec =
+                                                      '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
+                                                  c
+                                                      .getshared("downlaods")
+                                                      .then((value) {
+                                                    if (value != 'null') {
+                                                      value = value + rec;
+                                                      c.setshared(
+                                                          "downlaods", value);
+                                                    } else {
+                                                      c.setshared(
+                                                          "downlaods", rec);
+                                                    }
+                                                  });
+                                                  c
+                                                      .getshared("downlaods")
+                                                      .then((value) {
+                                                    print(
+                                                        "Here affter downlaodsa $value");
+                                                  });
+
+                                                  // c.setshared("Downloaded1", rec);
+                                                });
+                                              });
+                                              break;
+                                            }
+                                          }
+                                          limitextender += 1;
+                                        }
+
+                                        getData();
                                       }
-                                      // getStatics();
-                                      getData();
                                     }
                                   },
                                   child: Icon(
@@ -496,26 +528,63 @@ class _HomeState extends State<Home> {
   }
 
   play_audio(loop_id) {
-    if (play > 0) {
-      c.updatedPlay(play - 1, doc_id).then((value) {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => AudioPlayerPage(
-                      data: loop_id,
-                    )));
-      });
+    if (isPremimum == false) {
+      if (play > 0) {
+        c.updatedPlay(play - 1, doc_id).then((value) {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => AudioPlayerPage(
+                        data: loop_id,
+                      )));
+        });
+      } else {
+        c.showInSnackBar(context,
+            "You have listen to maximum free prayers, Upgrade your account to continue");
+        Future.delayed(Duration(milliseconds: 1200), () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => Profile(
+                        showSheet: true,
+                      )));
+        });
+      }
     } else {
-      c.showInSnackBar(context,
-          "You have listen to maximum free prayers, Upgrade your account to continue");
-      Future.delayed(Duration(milliseconds: 1200), () {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => Profile(
-                      showSheet: true,
-                    )));
-      });
+      var diff = DateTime.now().difference(subscribed_on).inDays;
+      print("Diff is $diff");
+      if (diff < int.parse(for_days.toString())) {
+        var limitextender = 1;
+        for (int i = 30; i < 365; i = i + 30) {
+          print("\n\n\ Loop now is $i");
+          if (diff < i) {
+            // print(play);
+            // print(mon_play_limit);
+            // print((mon_play_limit * limitextender));
+            print(play >= (mon_play_limit * limitextender));
+
+            if (play >= (mon_play_limit * limitextender)) {
+              //8>7
+              c.showInSnackBar(context,
+                  "You have listen to maximum free prayers for this month");
+
+              break;
+            } else {
+              //this will run
+              c.updatedPlay(play + 1, doc_id).then((value) {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => AudioPlayerPage(
+                              data: loop_id,
+                            )));
+              });
+              break;
+            }
+          }
+          limitextender += 1;
+        }
+      }
     }
   }
   // play(dataloop) {

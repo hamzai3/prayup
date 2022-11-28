@@ -73,8 +73,13 @@ class _RegisterState extends State<Register> {
         'email': email.text.toString(),
         'fullname': name.text.toString(),
         'play': "5",
-        'download': '0',
         'premium': 'NO',
+        'download': '0',
+        'play_limit': '0',
+        'download_limit': '0',
+        'subscribed_on': 'NO',
+        'for_days': '0',
+        'plan': '0 Days',
       });
       c.showInSnackBar(context, "Account registered, Login to continue");
       Future.delayed(Duration(seconds: 1), () {

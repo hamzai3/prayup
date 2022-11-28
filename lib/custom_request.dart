@@ -546,7 +546,7 @@ class _CustomRequestState extends State<CustomRequest> {
                                 Icons.email_outlined,
                                 color: c.whiteColor(),
                               ),
-                              hintText: "Note",
+                              hintText: "Nature Of Prayer",
                               filled: true,
                               fillColor: c.whiteColor(),
                               hintStyle: TextStyle(
