@@ -15,6 +15,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:terry/home.dart';
 import 'package:terry/playlist.dart';
 
 // typedef OnError = void Function(Exception exception);
@@ -94,15 +95,25 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
             // mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Select Playlist",
                     style: TextStyle(
                         fontSize: c.getFontSizeLabel(context),
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.white.withOpacity(0.7),
                         fontWeight: FontWeight.bold,
                         fontFamily: c.fontFamily()),
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop("cancel");
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  )
                 ],
               ),
               (allData).length <= 0
@@ -117,7 +128,7 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                               text: "There are no playlists",
                               style: TextStyle(
                                   fontSize: c.getFontSizeLabel(context) - 3,
-                                  color: Colors.black.withOpacity(0.5),
+                                  color: Colors.white.withOpacity(0.5),
                                   fontFamily: c.fontFamily()),
                             ),
                             TextSpan(
@@ -145,7 +156,7 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                             margin: const EdgeInsets.all(5.0),
                             padding: const EdgeInsets.all(5.0),
                             decoration: BoxDecoration(
-                              color: const Color(0xff6B5A00),
+                              color: c.getPink(),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: ListTile(
@@ -287,8 +298,20 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: c.blackColor(),
+        // backgroundColor: c.blackColor(),
         body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF280F48),
+                  const Color(0xFF51002E),
+                  // linear-gradient(180deg, #280F48 0%, #51002E 100%)
+                ],
+                begin: const FractionalOffset(1.0, 0.0),
+                end: const FractionalOffset(1.0, 1.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
           child: Padding(
             padding: EdgeInsets.all(c.deviceWidth(context) * 0.01),
             child: !_ready
@@ -303,33 +326,42 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).pop();
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (_) => Home()));
                               },
                               child: Icon(
-                                Icons.arrow_back_ios_sharp,
-                                color: c.whiteColor(),
+                                Icons.arrow_back,
+                                color: c.getPink(),
                               ),
                             )
                           ],
                         ),
                       ),
-                      c.getDivider(c.deviceHeight(context) * 0.06),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20), // Image border
-                        child: SizedBox.fromSize(
-                          size: Size.fromRadius(
-                              c.deviceWidth(context) * 0.4), // Image radius
-                          child: Image.asset(
-                            "assets/audio.png",
-                            fit: BoxFit.contain,
+                      // c.getDivider(c.deviceHeight(context) * 0.06),
+                      Stack(
+                        alignment: Alignment(0.0, 0.0),
+                        children: [
+                          CircleAvatar(
+                            radius: c.deviceWidth(context) * 0.3,
+                            backgroundImage: AssetImage("assets/audio.png"),
+                            backgroundColor: Colors.transparent,
                           ),
-                        ),
+                          player.playing
+                              ? Image.asset(
+                                  "assets/player.gif",
+                                  width: c.deviceWidth(context) * 0.85,
+                                )
+                              : Container(
+                                  width: c.deviceWidth(context) * 0.85,
+                                  height: c.deviceHeight(context) * 0.4,
+                                )
+                        ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AutoSizeText(
-                            widget.data['allbum'],
+                            widget.data['album'],
                             textAlign: TextAlign.start,
                             style: TextStyle(
                                 fontSize: c.getFontSizeLarge(context),
@@ -382,7 +414,7 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(player.position.inMinutes.toString() + ":00",
+                            Text("00:" + player.position.inSeconds.toString(),
                                 style: TextStyle(
                                     fontSize: c.getFontSizeSmall(context),
                                     fontWeight: FontWeight.w800,
@@ -407,14 +439,22 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                                                     .position.inMinutes
                                                     .toString())
                                                 .ceil() -
-                                            1)
+                                            10)
                                         .toString())));
                               });
                             },
-                            child: Icon(
-                              Icons.rotate_90_degrees_ccw_outlined,
-                              color: c.whiteColor(),
-                              size: c.deviceWidth(context) * 0.1,
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                gradient: c.buttonGradient(),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.fast_rewind_rounded,
+                                color: c.whiteColor(),
+                                size: c.deviceWidth(context) * 0.1,
+                              ),
                             ),
                           ),
                           GestureDetector(
@@ -435,13 +475,16 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                                 //         5.0) //                 <--- border radius here
                                 // ),
                               ),
-                              child: Padding(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: c.buttonGradient()),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(
                                   !player.playing
                                       ? Icons.play_arrow
                                       : Icons.pause,
-                                  color: c.blackColor(),
+                                  color: c.whiteColor(),
                                   size: c.deviceWidth(context) * 0.2,
                                 ),
                               ),
@@ -450,20 +493,28 @@ class _AudioPlayerPageOfflineState extends State<AudioPlayerPageOffline> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                // player.seek(Duration(minutes: 1));
                                 player.seek(Duration(
                                     seconds: int.parse((double.parse(player
                                                     .position.inSeconds
                                                     .toString())
                                                 .ceil() +
-                                            1)
+                                            10)
                                         .toString())));
+                                setState(() {});
                               });
                             },
-                            child: Icon(
-                              Icons.rotate_90_degrees_cw_outlined,
-                              color: c.whiteColor(),
-                              size: c.deviceWidth(context) * 0.1,
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                gradient: c.buttonGradient(),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.fast_forward_rounded,
+                                color: c.whiteColor(),
+                                size: c.deviceWidth(context) * 0.1,
+                              ),
                             ),
                           )
                         ],

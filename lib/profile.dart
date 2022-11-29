@@ -51,11 +51,6 @@ class _ProfileState extends State<Profile> {
   showAlert(BuildContext context, amount) {
     // set up the button
     // set up the AlertDialog
-    var disp_amount = '0';
-
-    if (amount == "1299") {
-      disp_amount = "12.99";
-    }
 
     // show the dialog
     showDialog(
@@ -63,13 +58,14 @@ class _ProfileState extends State<Profile> {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
+            backgroundColor: c.primaryColor(),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "Custom Prayer Request",
                   style: TextStyle(
-                      color: c.primaryColor(), fontWeight: FontWeight.w800),
+                      color: c.getPink(), fontWeight: FontWeight.w800),
                 ),
                 GestureDetector(
                     onTap: () {
@@ -82,42 +78,52 @@ class _ProfileState extends State<Profile> {
               ],
             ),
             content: Text(
-              "All sales are final and non-refundable",
+              "Get a prayer made specifically for you.\nAll sales are final and non-refundable",
               textAlign: TextAlign.center,
-              style: TextStyle(color: c.primaryColor()),
+              style: TextStyle(color: c.whiteColor()),
             ),
-            backgroundColor: Color(0xff252525),
             actions: [
-              CheckboxListTile(
-                title: Text(
-                  "I agree terms & conditions",
-                  style: TextStyle(color: warn ? Colors.red : Colors.white),
+              Theme(
+                data: Theme.of(context).copyWith(
+                    checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100)),
+                        )),
+                child: CheckboxListTile(
+                  checkColor: c.whiteColor(),
+                  activeColor: c.getPink(),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(400)),
+                  title: Text(
+                    "I agree to the Terms & Conditions",
+                    style: TextStyle(
+                        color: warn ? Colors.red : c.getPink(),
+                        fontSize: c.getFontSizeSmall(context) - 4),
+                  ),
+                  value: terms,
+                  onChanged: (newValue) {
+                    setState(() {
+                      terms = newValue!;
+                    });
+                  },
+                  controlAffinity:
+                      ListTileControlAffinity.leading, //  <-- leading Checkbox
                 ),
-                activeColor: Colors.white,
-                value: terms,
-                onChanged: (newValue) {
-                  print("Ok0");
-                  setState(() {
-                    terms = newValue!;
-                  });
-                },
-                controlAffinity:
-                    ListTileControlAffinity.leading, //  <-- leading Checkbox
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
                     decoration: BoxDecoration(
-                      border: Border.all(width: 1.0, color: c.primaryColor()),
+                      border: Border.all(width: 2.0, color: c.getPink()),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20.0)),
                     ),
                     child: TextButton(
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: c.primaryColor()),
+                        style: TextStyle(color: c.whiteColor()),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -128,8 +134,9 @@ class _ProfileState extends State<Profile> {
                   Container(
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
+                      gradient: c.buttonGradient(),
                       color: c.primaryColor(),
-                      border: Border.all(width: 1.0, color: c.primaryColor()),
+                      border: Border.all(width: 3.0, color: c.getPink()),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20.0)),
                     ),
@@ -252,6 +259,11 @@ class _ProfileState extends State<Profile> {
         });
       }
     });
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        isPremimum = false;
+      });
+    });
   }
 
   bool isPremimum = false;
@@ -291,9 +303,6 @@ class _ProfileState extends State<Profile> {
                   ),
                   trailing: Container(
                       decoration: BoxDecoration(
-                        // border: Border.all(
-                        //   width: 1.0,
-                        // ),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10.0)),
                         color: c.primaryColor(),
@@ -489,15 +498,15 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
-      appBar: CupertinoNavigationBar(
-        backgroundColor: c.blackColor(),
-        middle: Text(
-          'Profile',
-          style:
-              TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
-        ),
-      ),
+      backgroundColor: c.bgColor(),
+      // appBar: CupertinoNavigationBar(
+      //   backgroundColor: c.getPink(),
+      //   middle: Text(
+      //     'Profile',
+      //     style:
+      //         TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
+      //   ),
+      // ),
       body: WillPopScope(
         onWillPop: () => _exitApp(context),
         child: SafeArea(
@@ -507,6 +516,22 @@ class _ProfileState extends State<Profile> {
                 )
               : ListView(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 17),
+                            child: AutoSizeText(
+                              "Profile",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: c.whiteColor(),
+                                fontFamily: c.fontFamily(),
+                                fontSize: c.getFontSizeLabel(context) + 5,
+                              ),
+                            )),
+                      ],
+                    ),
                     c.getDivider(c.deviceHeight(context) * 0.06),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -515,6 +540,7 @@ class _ProfileState extends State<Profile> {
                         Initicon(
                           text: "$fullname".toUpperCase(),
                           elevation: 4,
+                          backgroundColor: c.getPink(),
                           size: c.deviceWidth(context) * 0.3,
                         ),
                         GestureDetector(
@@ -529,7 +555,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ],
                     ),
-                    c.getDivider(c.deviceHeight(context) * 0.04),
+                    c.getDivider(c.deviceHeight(context) * 0.03),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -562,30 +588,43 @@ class _ProfileState extends State<Profile> {
                             )),
                       ],
                     ),
-                    c.getDivider(c.deviceHeight(context) * 0.05),
+                    c.getDivider(c.deviceHeight(context) * 0.03),
                     isPremimum
                         ? Container()
                         : Container(
                             margin: const EdgeInsets.all(5.0),
                             decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                ),
-                                top: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
                               ),
+                              gradient: c.buttonGradient(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 5.0,
+                                ),
+                              ],
                             ),
                             child: ListTile(
                               onTap: () {
                                 showModalBottomSheetCupetino();
                               },
-                              leading: Icon(
-                                Icons.star,
-                                color: c.whiteColor(),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: c.primaryColor(),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey,
+                                        blurRadius: 1.5,
+                                      ),
+                                    ]),
+                                child: Icon(
+                                  Icons.star,
+                                  color: c.whiteColor(),
+                                ),
                               ),
                               title: Row(
                                 children: [
@@ -631,12 +670,16 @@ class _ProfileState extends State<Profile> {
                     Container(
                       margin: const EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.white,
-                            width: 1.0,
-                          ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
                         ),
+                        gradient: c.buttonGradient(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 5.0,
+                          ),
+                        ],
                       ),
                       child: ListTile(
                         onTap: () {
@@ -645,9 +688,22 @@ class _ProfileState extends State<Profile> {
                               CupertinoPageRoute(
                                   builder: (_) => RequestedPrayers()));
                         },
-                        leading: Icon(
-                          Icons.music_note,
-                          color: c.whiteColor(),
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: c.primaryColor(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 1.5,
+                                ),
+                              ]),
+                          child: Icon(
+                            Icons.music_note,
+                            color: c.whiteColor(),
+                          ),
                         ),
                         title: AutoSizeText(
                           "Requested Prayers",
@@ -663,17 +719,21 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                    !isPremimum
+                    isPremimum
                         ? Container()
                         : Container(
                             margin: const EdgeInsets.all(5.0),
                             decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.white,
-                                  width: 1.0,
-                                ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
                               ),
+                              gradient: c.buttonGradient(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 5.0,
+                                ),
+                              ],
                             ),
                             child: ListTile(
                               onTap: () {
@@ -696,9 +756,22 @@ class _ProfileState extends State<Profile> {
                                   }
                                 });
                               },
-                              leading: Icon(
-                                Icons.queue_music_outlined,
-                                color: c.whiteColor(),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: c.primaryColor(),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey,
+                                        blurRadius: 1.5,
+                                      ),
+                                    ]),
+                                child: Icon(
+                                  Icons.queue_music_outlined,
+                                  color: c.whiteColor(),
+                                ),
                               ),
                               title: AutoSizeText(
                                 "Custom Prayers",
@@ -712,26 +785,51 @@ class _ProfileState extends State<Profile> {
                                 Icons.arrow_forward_ios,
                                 color: c.whiteColor(),
                               ),
+                              subtitle: AutoSizeText(
+                                "Get a prayer made specifically for you",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: c.getFontSizeSmall(context) - 5,
+                                    // fontWeight: FontWeight.w800,
+                                    color: c.getColor("grey")),
+                              ),
                             ),
                           ),
                     Container(
                       margin: const EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.white,
-                            width: 1.0,
-                          ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
                         ),
+                        gradient: c.buttonGradient(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 5.0,
+                          ),
+                        ],
                       ),
                       child: ListTile(
                         onTap: () {
                           Navigator.push(context,
                               CupertinoPageRoute(builder: (_) => PlayList()));
                         },
-                        leading: Icon(
-                          Icons.topic_outlined,
-                          color: c.whiteColor(),
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: c.primaryColor(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 1.5,
+                                ),
+                              ]),
+                          child: Icon(
+                            Icons.topic_outlined,
+                            color: c.whiteColor(),
+                          ),
                         ),
                         title: AutoSizeText(
                           "Playlist",
@@ -750,12 +848,16 @@ class _ProfileState extends State<Profile> {
                     Container(
                       margin: const EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.white,
-                            width: 1.0,
-                          ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
                         ),
+                        gradient: c.buttonGradient(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 5.0,
+                          ),
+                        ],
                       ),
                       child: ListTile(
                         onTap: () {
@@ -764,9 +866,22 @@ class _ProfileState extends State<Profile> {
                               CupertinoPageRoute(
                                   builder: (_) => MyDownloads()));
                         },
-                        leading: Icon(
-                          Icons.download,
-                          color: c.whiteColor(),
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: c.primaryColor(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 1.5,
+                                ),
+                              ]),
+                          child: Icon(
+                            Icons.download,
+                            color: c.whiteColor(),
+                          ),
                         ),
                         title: AutoSizeText(
                           "My Downloads",
@@ -784,18 +899,35 @@ class _ProfileState extends State<Profile> {
                     ),
                     Container(
                       margin: const EdgeInsets.all(5.0),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.white,
-                            width: 1.0,
-                          ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
                         ),
+                        gradient: c.buttonGradient(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 5.0,
+                          ),
+                        ],
                       ),
                       child: ListTile(
-                        leading: Icon(
-                          Icons.logout,
-                          color: c.whiteColor(),
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: c.primaryColor(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 1.5,
+                                ),
+                              ]),
+                          child: Icon(
+                            Icons.logout,
+                            color: c.whiteColor(),
+                          ),
                         ),
                         title: AutoSizeText(
                           "Logout",
@@ -823,7 +955,7 @@ class _ProfileState extends State<Profile> {
                         Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            "Version 1.0.7",
+                            "Version 1.0.8",
                             style: TextStyle(
                               color: c.getColor("grey"),
                               fontSize: c.getFontSizeLabel(context) - 2,

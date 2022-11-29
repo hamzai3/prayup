@@ -115,7 +115,7 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
+      backgroundColor: c.primaryColor(),
       body: WillPopScope(
         onWillPop: () => _exitApp(context),
         child: SafeArea(
@@ -224,7 +224,9 @@ class _SearchState extends State<Search> {
                                               c.deviceWidth(context) *
                                                   0.1), // Image radius
                                           child: Image.asset(
-                                            "assets/slider/${(random.nextInt(4) + 1)}.png",
+                                            "assets/slider/" +
+                                                c.filename(allData[j]['album']
+                                                    .toString()),
                                           ),
                                         ),
                                       ),
@@ -283,15 +285,22 @@ class _SearchState extends State<Search> {
                                           ],
                                         ),
                                       ),
-                                      trailing: allData[j]['free'] == "true"
-                                          ? Icon(
-                                              Icons.play_arrow,
-                                              color: c.whiteColor(),
-                                            )
-                                          : Icon(
-                                              Icons.lock,
-                                              color: c.getColor("red"),
-                                            ),
+                                      trailing: Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: c.primaryColor()),
+                                        child: allData[j]['free'] == "true"
+                                            ? Icon(
+                                                Icons.play_arrow,
+                                                color: c.getPink(),
+                                              )
+                                            : Icon(
+                                                Icons.play_arrow,
+                                                color: c.getPink(),
+                                              ),
+                                      ),
                                       onTap: () {
                                         Navigator.push(
                                             context,

@@ -77,10 +77,33 @@ class _PlayListState extends State<PlayList> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Create Playlist'),
+            backgroundColor: c.primaryColor(),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Create Playlist",
+                  style: TextStyle(
+                      color: c.getPink(), fontWeight: FontWeight.w800),
+                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ))
+              ],
+            ),
             content: TextField(
+              style: TextStyle(color: Colors.white),
               // controller: _textFieldController,
-              decoration: InputDecoration(hintText: "Enter Playlist name"),
+              decoration: InputDecoration(
+                  hintText: "Enter Playlist name",
+                  hintStyle: TextStyle(color: Colors.white),
+                  fillColor: c.getPink(),
+                  filled: true),
               onSubmitted: (s) {
                 FirebaseFirestore.instance.collection('playlists').add({
                   'email': username.toString(),
@@ -115,9 +138,9 @@ class _PlayListState extends State<PlayList> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
+      backgroundColor: c.bgColor(),
       appBar: CupertinoNavigationBar(
-        backgroundColor: c.blackColor(),
+        backgroundColor: c.primaryColor(),
         middle: Text(
           'PlayList',
           style:
@@ -177,6 +200,8 @@ class _PlayListState extends State<PlayList> {
                           Icons.search,
                           color: Colors.white,
                         ),
+                        fillColor: c.primaryColor(),
+                        filled: true,
                         hintText: " Search Playlist",
                         hintStyle: TextStyle(
                             fontSize: c.getFontSize(context),
@@ -184,12 +209,12 @@ class _PlayListState extends State<PlayList> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide:
-                              BorderSide(color: c.whiteColor(), width: 1.0),
+                              BorderSide(color: c.primaryColor(), width: 1.0),
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
-                              style: BorderStyle.none, color: c.whiteColor()),
+                              style: BorderStyle.none, color: c.primaryColor()),
                         ),
                         contentPadding: EdgeInsets.all(16),
                       ),
@@ -217,10 +242,15 @@ class _PlayListState extends State<PlayList> {
                           itemCount: allData.length,
                           itemBuilder: (context, j) {
                             return Container(
+                              padding: EdgeInsets.all(5),
                               margin: const EdgeInsets.all(5.0),
                               decoration: BoxDecoration(
+                                gradient: c.buttonGradient(),
                                 border: Border.all(
-                                    width: 1.0, color: c.primaryColor()),
+                                    width: 1.0,
+                                    color: allData[j]['free'] == "true"
+                                        ? c.primaryColor()
+                                        : c.getColor("red")),
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(20.0)),
                               ),
@@ -233,7 +263,7 @@ class _PlayListState extends State<PlayList> {
                                         c.deviceWidth(context) *
                                             0.1), // Image radius
                                     child: Image.asset(
-                                      "assets/slider/${(random.nextInt(4) + 1)}.png",
+                                      "assets/banner/Group ${(random.nextInt(4) + 1)}.png",
                                     ),
                                   ),
                                 ),
@@ -272,7 +302,10 @@ class _PlayListState extends State<PlayList> {
           onPressed: () {
             showModalBottomSheetCupetino();
           },
-          label: Text("Create New Playlst")),
+          label: Text(
+            "Create New Playlist",
+            style: TextStyle(color: Colors.white),
+          )),
     );
   }
 }

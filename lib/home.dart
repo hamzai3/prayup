@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:terry/SamplePlayer.dart';
 import 'package:terry/audio_player.dart';
 import 'package:terry/bottomNav.dart';
 import 'package:terry/constants.dart';
@@ -56,7 +57,7 @@ class _HomeState extends State<Home> {
     // Get data from docs and convert map to List
     setState(() {
       allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-      // print("Hey data is $allData");
+      print("Hey data is $allData");
       isLoading = false;
     });
     c.getshared("UserName").then((value) {
@@ -168,14 +169,13 @@ class _HomeState extends State<Home> {
       disp_amount = "5.99";
     }
     AlertDialog alert = AlertDialog(
-      backgroundColor: Color(0xff252525),
+      backgroundColor: c.bgColor(),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             "Download Prayer",
-            style:
-                TextStyle(color: c.primaryColor(), fontWeight: FontWeight.w800),
+            style: TextStyle(color: c.getPink(), fontWeight: FontWeight.w800),
           ),
           GestureDetector(
               onTap: () {
@@ -189,7 +189,7 @@ class _HomeState extends State<Home> {
       ),
       content: Text(
         "$msg",
-        style: TextStyle(color: c.primaryColor()),
+        style: TextStyle(color: c.whiteColor()),
       ),
       actions: [
         Row(
@@ -199,14 +199,14 @@ class _HomeState extends State<Home> {
               width: MediaQuery.of(context).size.width * 0.35,
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: c.primaryColor(),
-                border: Border.all(width: 1.0, color: c.primaryColor()),
+                // color: c.primaryColor(),
+                border: Border.all(width: 2.0, color: c.getPink()),
                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
               ),
               child: TextButton(
                 child: Text(
                   "Upgrade Account",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -218,14 +218,15 @@ class _HomeState extends State<Home> {
               width: MediaQuery.of(context).size.width * 0.35,
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: c.primaryColor(),
+                // color: c.primaryColor(),
+                gradient: c.buttonGradient(),
                 border: Border.all(width: 1.0, color: c.primaryColor()),
                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
               ),
               child: TextButton(
                 child: Text(
                   "Pay \$$disp_amount ",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop("cancel");
@@ -268,7 +269,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
+      backgroundColor: c.bgColor(),
       body: WillPopScope(
         onWillPop: () => _exitApp(context),
         child: SafeArea(
@@ -299,19 +300,33 @@ class _HomeState extends State<Home> {
                     items: sliderCount.map((i) {
                       return Builder(
                         builder: (BuildContext context) {
-                          return InkWell(
-                            onTap: () {
-                              Future.delayed(Duration(seconds: 1), () {});
-                            },
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Image border
-                              child: SizedBox.fromSize(
-                                size: Size.fromRadius(c.deviceWidth(context) *
-                                    0.9), // Image radius
-                                child: Image.asset(
-                                  "assets/banner/${(i + 1)}.png",
-                                  fit: BoxFit.fill,
+                          return Container(
+                            decoration: BoxDecoration(
+                                gradient: c.containerGradient(),
+                                border:
+                                    Border.all(width: 1.0, color: c.bgColor()),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(20.0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 5.0,
+                                  ),
+                                ]),
+                            child: InkWell(
+                              onTap: () {
+                                Future.delayed(Duration(seconds: 1), () {});
+                              },
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(20), // Image border
+                                child: SizedBox.fromSize(
+                                  size: Size.fromRadius(c.deviceWidth(context) *
+                                      1), // Image radius
+                                  child: Image.asset(
+                                    "assets/banner/Group ${(i + 1)}.png",
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                               ),
                             ),
@@ -324,7 +339,9 @@ class _HomeState extends State<Home> {
               ),
               isLoading
                   ? Container()
-                  : ListView.builder(
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 2 / 2.1, crossAxisCount: 2),
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: allData.length,
@@ -332,189 +349,314 @@ class _HomeState extends State<Home> {
                         return Container(
                           margin: const EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
+                            gradient: c.containerGradient(),
                             border: Border.all(
                                 width: 1.0,
                                 color: allData[j]['free'] == "true"
-                                    ? c.whiteColor()
+                                    ? c.bgColor()
                                     : c.getColor("red")),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20.0)),
                           ),
-                          child: ListTile(
-                            leading: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Image border
-                              child: SizedBox.fromSize(
-                                size: Size.fromRadius(c.deviceWidth(context) *
-                                    0.1), // Image radius
-                                child: Image.asset(
-                                  "assets/banner/${(random.nextInt(4) + 1)}.png",
-                                ),
-                              ),
-                            ),
-                            title: AutoSizeText(
-                              allData[j]['album'],
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: c.getFontSizeSmall(context),
-                                  fontWeight: FontWeight.w800,
-                                  color: c.getColor("grey")),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(right: 28.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  allData[j]['free'] == "true"
-                                      ? AutoSizeText(
-                                          "Free",
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                              fontSize:
-                                                  c.getFontSizeSmall(context),
-                                              fontWeight: FontWeight.w800,
-                                              color: c.getColor("green")),
-                                        )
-                                      : AutoSizeText(
-                                          "Paid",
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                              fontSize:
-                                                  c.getFontSizeSmall(context),
-                                              fontWeight: FontWeight.w800,
-                                              color: c.getColor("red")),
-                                        ),
-                                  AutoSizeText(
-                                    allData[j]['artist'],
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontSize:
-                                            c.getFontSizeSmall(context) - 2,
-                                        fontWeight: FontWeight.w800,
-                                        color: c.getColor("light_grey")),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    if (isPremimum == false) {
-                                      c.showInSnackBar(context,
-                                          "Upgrade your account to download this prayer");
-                                      showAlert(
-                                          context,
-                                          "999",
-                                          "Upgrade your account to access download feature\nOr pay \$9.99 to download this prayer",
-                                          allData[j]);
-                                    } else {
-                                      var diff = DateTime.now()
-                                          .difference(subscribed_on)
-                                          .inDays;
-                                      if (diff <
-                                          int.parse(for_days.toString())) {
-                                        var limitextender = 1;
-                                        for (int i = 30; i < 365; i = i + 30) {
-                                          print("\n\n\ Loop now is $i");
-                                          if (diff < i) {
-                                            if (download >=
-                                                (mon_donwload_limit *
-                                                    limitextender)) {
-                                              //8>7
-                                              c.showInSnackBar(context,
-                                                  "You have reached maximum download limit for this month");
-                                              showAlert(
-                                                  context,
-                                                  "599",
-                                                  "Maximum download limit reached!\nPay \$5.99 to download this prayer",
-                                                  allData[j]);
-                                              break;
-                                            } else {
-                                              //this will run
-                                              c
-                                                  .updatedDownload(
-                                                      download + 1, doc_id)
-                                                  .then((value) {
-                                                c.showInSnackBar(context,
-                                                    "Prayer is being downloaded and it will be saved in My Downloads");
-                                                c
-                                                    .download1(
-                                                        dio,
-                                                        allData[j]['url'],
-                                                        '/' +
-                                                            allData[j]['album']
-                                                                .toString()
-                                                                .replaceAll(
-                                                                    " ", "_") +
-                                                            ".mp3")
-                                                    .then((value) {
-                                                  print("downloaded to $value");
-
-                                                  //  var rec = '{"downloaded":}';
-                                                  var rec =
-                                                      '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
-                                                  c
-                                                      .getshared("downlaods")
-                                                      .then((value) {
-                                                    if (value != 'null') {
-                                                      value = value + rec;
-                                                      c.setshared(
-                                                          "downlaods", value);
-                                                    } else {
-                                                      c.setshared(
-                                                          "downlaods", rec);
-                                                    }
-                                                  });
-                                                  c
-                                                      .getshared("downlaods")
-                                                      .then((value) {
-                                                    print(
-                                                        "Here affter downlaodsa $value");
-                                                  });
-
-                                                  // c.setshared("Downloaded1", rec);
-                                                });
-                                              });
-                                              break;
-                                            }
-                                          }
-                                          limitextender += 1;
-                                        }
-
-                                        getData();
-                                      }
-                                    }
-                                  },
-                                  child: Icon(
-                                    Icons.download,
-                                    color: c.whiteColor(),
-                                  ),
-                                ),
-                                allData[j]['free'] == "true"
-                                    ? Icon(
-                                        Icons.play_arrow,
-                                        color: c.whiteColor(),
-                                      )
-                                    : isPremimum == true
-                                        ? Icon(
-                                            Icons.play_arrow,
-                                            color: c.getColor("red"),
-                                          )
-                                        : Icon(
-                                            Icons.lock,
-                                            color: c.getColor("red"),
-                                          ),
-                              ],
-                            ),
+                          child: GestureDetector(
                             onTap: () {
                               allData[j]['free'] == "true"
                                   ? play_audio(allData[j])
                                   : c.showInSnackBar(context,
                                       "Upgrade your account to access paid prayers");
                             },
+                            child: Column(
+                              children: [
+                                Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Image border
+                                      child: Image.asset(
+                                        "assets/slider/" +
+                                            c.filename(
+                                                allData[j]['album'].toString()),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: allData[j]['free'] == "true"
+                                            ? Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    6, 2, 6, 2),
+                                                decoration: BoxDecoration(
+                                                  color: c.getColor("green"),
+                                                  border: Border.all(
+                                                      width: 1.0,
+                                                      color:
+                                                          c.getColor("green")),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              20.0)),
+                                                ),
+                                                child: AutoSizeText(
+                                                  "Free",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          c.getFontSizeSmall(
+                                                                  context) -
+                                                              2,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color: c.whiteColor()),
+                                                ),
+                                              )
+                                            : Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    6, 2, 6, 2),
+                                                decoration: BoxDecoration(
+                                                  color: c.getColor("red"),
+                                                  border: Border.all(
+                                                      width: 1.0,
+                                                      color: c.getColor("red")),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              20.0)),
+                                                ),
+                                                child: AutoSizeText(
+                                                  "Paid",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          c.getFontSizeSmall(
+                                                                  context) -
+                                                              2,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color: c.whiteColor()),
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: allData[j]['title'],
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          c.getFontSizeSmall(
+                                                              context),
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color:
+                                                          c.getColor("grey")),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: allData[j]['artist'] +
+                                                      "\n",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          c.getFontSizeSmall(
+                                                                  context) -
+                                                              5,
+                                                      fontWeight:
+                                                          FontWeight.w100,
+                                                      color: const Color(
+                                                          0xffEF83C0)),
+                                                ),
+                                                TextSpan(
+                                                  text: allData[j]['album'],
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          c.getFontSizeSmall(
+                                                                  context) -
+                                                              6,
+                                                      color:
+                                                          c.getColor("grey")),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: c.primaryColor()),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    if (isPremimum == false) {
+                                                      c.showInSnackBar(context,
+                                                          "Upgrade your account to download this prayer");
+                                                      showAlert(
+                                                          context,
+                                                          "999",
+                                                          "Upgrade your account to access download feature\nOr pay \$9.99 to download this prayer",
+                                                          allData[j]);
+                                                    } else {
+                                                      var diff = DateTime.now()
+                                                          .difference(
+                                                              subscribed_on)
+                                                          .inDays;
+                                                      if (diff <
+                                                          int.parse(for_days
+                                                              .toString())) {
+                                                        var limitextender = 1;
+                                                        for (int i = 30;
+                                                            i < 365;
+                                                            i = i + 30) {
+                                                          print(
+                                                              "\n\n\ Loop now is $i");
+                                                          if (diff < i) {
+                                                            if (download >=
+                                                                (mon_donwload_limit *
+                                                                    limitextender)) {
+                                                              //8>7
+                                                              c.showInSnackBar(
+                                                                  context,
+                                                                  "You have reached maximum download limit for this month");
+                                                              showAlert(
+                                                                  context,
+                                                                  "599",
+                                                                  "Maximum download limit reached!\nPay \$5.99 to download this prayer",
+                                                                  allData[j]);
+                                                              break;
+                                                            } else {
+                                                              //this will run
+                                                              c
+                                                                  .updatedDownload(
+                                                                      download +
+                                                                          1,
+                                                                      doc_id)
+                                                                  .then(
+                                                                      (value) {
+                                                                c.showInSnackBar(
+                                                                    context,
+                                                                    "Prayer is being downloaded and it will be saved in My Downloads");
+                                                                c
+                                                                    .download1(
+                                                                        dio,
+                                                                        allData[j]
+                                                                            [
+                                                                            'url'],
+                                                                        '/' +
+                                                                            allData[j]['album'].toString().replaceAll(" ",
+                                                                                "_") +
+                                                                            ".mp3")
+                                                                    .then(
+                                                                        (value) {
+                                                                  print(
+                                                                      "downloaded to $value");
+
+                                                                  //  var rec = '{"downloaded":}';
+                                                                  var rec =
+                                                                      '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
+                                                                  c
+                                                                      .getshared(
+                                                                          "downlaods")
+                                                                      .then(
+                                                                          (value) {
+                                                                    if (value !=
+                                                                        'null') {
+                                                                      value =
+                                                                          value +
+                                                                              rec;
+                                                                      c.setshared(
+                                                                          "downlaods",
+                                                                          value);
+                                                                    } else {
+                                                                      c.setshared(
+                                                                          "downlaods",
+                                                                          rec);
+                                                                    }
+                                                                  });
+                                                                  c
+                                                                      .getshared(
+                                                                          "downlaods")
+                                                                      .then(
+                                                                          (value) {
+                                                                    print(
+                                                                        "Here affter downlaodsa $value");
+                                                                  });
+
+                                                                  // c.setshared("Downloaded1", rec);
+                                                                });
+                                                              });
+                                                              break;
+                                                            }
+                                                          }
+                                                          limitextender += 1;
+                                                        }
+
+                                                        getData();
+                                                      }
+                                                    }
+                                                  },
+                                                  child: Icon(
+                                                    Icons
+                                                        .file_download_outlined,
+                                                    color: c.getPink(),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 10,
+                                              ),
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: c.primaryColor()),
+                                                child: allData[j]['free'] ==
+                                                        "true"
+                                                    ? Icon(
+                                                        Icons.play_arrow,
+                                                        color: c.getPink(),
+                                                      )
+                                                    : isPremimum == true
+                                                        ? Icon(
+                                                            Icons.play_arrow,
+                                                            color: c.getPink(),
+                                                          )
+                                                        : Icon(
+                                                            Icons.lock,
+                                                            color: c.getPink(),
+                                                          ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -534,7 +676,7 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context,
               CupertinoPageRoute(
-                  builder: (context) => AudioPlayerPage(
+                  builder: (context) => MyPlayer(
                         data: loop_id,
                       )));
         });

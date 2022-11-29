@@ -103,7 +103,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: c.blackColor(),
+        backgroundColor: c.bgColor(),
         body: WillPopScope(
             onWillPop: () => _exitApp(context),
             child: SafeArea(
@@ -153,7 +153,7 @@ class _LoginState extends State<Login> {
                               Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 17),
                                   child: AutoSizeText(
-                                    'Sign in to continue'.toUpperCase(),
+                                    'Sign in to continue'.toString(),
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                         fontSize: c.getFontSizeSmall(context),
@@ -190,6 +190,7 @@ class _LoginState extends State<Login> {
                                     color: c.whiteColor(),
                                   ),
                                   hintText: "Email",
+                                  filled: true,
                                   fillColor: c.primaryColor(),
                                   hintStyle: TextStyle(
                                       fontSize: c.getFontSize(context),
@@ -242,26 +243,12 @@ class _LoginState extends State<Login> {
                                     },
                                     child: Icon(
                                       hide_password
-                                          ? Icons.lock_outline
-                                          : Icons.lock_open_outlined,
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
                                       color: c.whiteColor(),
                                     ),
                                   ),
-                                  // suffix: InkWell(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       if (hide_password) {
-                                  //         hide_password = false;
-                                  //       } else {
-                                  //         hide_password = true;
-                                  //       }
-                                  //     });
-                                  //   },
-                                  //   child: Text(
-                                  //     hide_password ? "😑" : "😯",
-                                  //     style: TextStyle(color: c.whiteColor()),
-                                  //   ),
-                                  // ),
+                                  filled: true,
                                   hintText: "Password",
                                   fillColor: c.primaryColor(),
                                   hintStyle: TextStyle(
@@ -337,14 +324,15 @@ class _LoginState extends State<Login> {
                                     child: Container(
                                       padding: EdgeInsets.all(13),
                                       decoration: BoxDecoration(
-                                        color: c.primaryColor(),
+                                        // color: c.primaryColor(),
+                                        gradient: c.buttonGradient(),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Center(
                                         child: Text(
                                           "Sign In",
                                           style: TextStyle(
-                                            color: c.blackColor(),
+                                            color: c.whiteColor(),
                                             fontWeight: FontWeight.w600,
                                             fontSize:
                                                 c.getFontSizeLabel(context),
@@ -488,7 +476,7 @@ class _ForgotState extends State<Forgot> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: c.blackColor(),
+        backgroundColor: c.bgColor(),
         body: WillPopScope(
             onWillPop: () => _exitApp(context),
             child: SafeArea(
@@ -540,8 +528,8 @@ class _ForgotState extends State<Forgot> {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 17),
                                     child: AutoSizeText(
-                                      'You will receive reset password link on your registered email'
-                                          .toUpperCase(),
+                                      'Enter the email associated with your account and we’ll send an email with instructions to reset your password.'
+                                          .toString(),
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: c.getFontSizeSmall(context),
@@ -578,8 +566,9 @@ class _ForgotState extends State<Forgot> {
                                     Icons.email_outlined,
                                     color: c.whiteColor(),
                                   ),
-                                  hintText: "Registered Email",
+                                  hintText: "Email",
                                   fillColor: c.primaryColor(),
+                                  filled: true,
                                   hintStyle: TextStyle(
                                       fontSize: c.getFontSize(context),
                                       color: Colors.white),
@@ -624,14 +613,15 @@ class _ForgotState extends State<Forgot> {
                                     child: Container(
                                       padding: EdgeInsets.all(13),
                                       decoration: BoxDecoration(
-                                        color: c.primaryColor(),
+                                        // color: c.primaryColor(),
+                                        gradient: c.buttonGradient(),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Center(
                                         child: Text(
                                           "Sign In",
                                           style: TextStyle(
-                                            color: c.blackColor(),
+                                            color: c.whiteColor(),
                                             fontWeight: FontWeight.w600,
                                             fontSize:
                                                 c.getFontSizeLabel(context),
@@ -680,7 +670,7 @@ class _ForgotState extends State<Forgot> {
                                         fontFamily: c.fontFamily()),
                                     children: [
                                       TextSpan(
-                                          text: "Already have account? ",
+                                          text: "Already have an account? ",
                                           style: TextStyle(
                                             color: c.whiteColor(),
                                           )),

@@ -95,15 +95,25 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
             // mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Select Playlist",
                     style: TextStyle(
                         fontSize: c.getFontSizeLabel(context),
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.white.withOpacity(0.7),
                         fontWeight: FontWeight.bold,
                         fontFamily: c.fontFamily()),
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop("cancel");
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  )
                 ],
               ),
               (allData).length <= 0
@@ -118,7 +128,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                               text: "There are no playlists",
                               style: TextStyle(
                                   fontSize: c.getFontSizeLabel(context) - 3,
-                                  color: Colors.black.withOpacity(0.5),
+                                  color: Colors.white.withOpacity(0.5),
                                   fontFamily: c.fontFamily()),
                             ),
                             TextSpan(
@@ -146,7 +156,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                             margin: const EdgeInsets.all(5.0),
                             padding: const EdgeInsets.all(5.0),
                             decoration: BoxDecoration(
-                              color: const Color(0xff6B5A00),
+                              color: c.getPink(),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: ListTile(
@@ -344,8 +354,20 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
       child: WillPopScope(
         onWillPop: () => _exitApp(context),
         child: Scaffold(
-          backgroundColor: c.blackColor(),
+          // backgroundColor: c.blackColor(),
           body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF280F48),
+                    const Color(0xFF51002E),
+                    // linear-gradient(180deg, #280F48 0%, #51002E 100%)
+                  ],
+                  begin: const FractionalOffset(1.0, 0.0),
+                  end: const FractionalOffset(1.0, 1.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
+            ),
             child: Padding(
               padding: EdgeInsets.all(c.deviceWidth(context) * 0.01),
               child: !_ready
@@ -366,26 +388,46 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                                           builder: (_) => Home()));
                                 },
                                 child: Icon(
-                                  Icons.arrow_back_ios_sharp,
-                                  color: c.whiteColor(),
+                                  Icons.arrow_back,
+                                  color: c.getPink(),
                                 ),
                               )
                             ],
                           ),
                         ),
-                        c.getDivider(c.deviceHeight(context) * 0.06),
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(20), // Image border
-                          child: SizedBox.fromSize(
-                            size: Size.fromRadius(
-                                c.deviceWidth(context) * 0.4), // Image radius
-                            child: Image.asset(
-                              "assets/audio.png",
-                              fit: BoxFit.contain,
+                        // c.getDivider(c.deviceHeight(context) * 0.06),
+                        // ClipRRect(
+                        //   borderRadius:
+                        //       BorderRadius.circular(20), // Image border
+                        //   child: SizedBox.fromSize(
+                        //     size: Size.fromRadius(
+                        //         c.deviceWidth(context) * 0.4), // Image radius
+                        //     child: Image.asset(
+                        //       "assets/audio.png",
+                        //       fit: BoxFit.contain,
+                        //     ),
+                        //   ),
+                        // ),
+                        Stack(
+                          alignment: Alignment(0.0, 0.0),
+                          children: [
+                            CircleAvatar(
+                              radius: c.deviceWidth(context) * 0.3,
+                              backgroundImage: AssetImage("assets/audio.png"),
+                              backgroundColor: Colors.transparent,
                             ),
-                          ),
+                            player.playing
+                                ? Image.asset(
+                                    "assets/player.gif",
+                                    width: c.deviceWidth(context) * 0.85,
+                                  )
+                                : Container(
+                                    width: c.deviceWidth(context) * 0.85,
+                                    height: c.deviceHeight(context) * 0.4,
+                                  )
+                          ],
                         ),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -473,10 +515,18 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                                   setState(() {});
                                 });
                               },
-                              child: Icon(
-                                Icons.rotate_90_degrees_ccw_outlined,
-                                color: c.whiteColor(),
-                                size: c.deviceWidth(context) * 0.1,
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  gradient: c.buttonGradient(),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.fast_rewind_rounded,
+                                  color: c.whiteColor(),
+                                  size: c.deviceWidth(context) * 0.1,
+                                ),
                               ),
                             ),
                             GestureDetector(
@@ -497,13 +547,16 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                                   //         5.0) //                 <--- border radius here
                                   // ),
                                 ),
-                                child: Padding(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: c.buttonGradient()),
                                   padding: const EdgeInsets.all(8.0),
                                   child: Icon(
                                     !player.playing
                                         ? Icons.play_arrow
                                         : Icons.pause,
-                                    color: c.blackColor(),
+                                    color: c.whiteColor(),
                                     size: c.deviceWidth(context) * 0.2,
                                   ),
                                 ),
@@ -522,10 +575,18 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                                   setState(() {});
                                 });
                               },
-                              child: Icon(
-                                Icons.rotate_90_degrees_cw_outlined,
-                                color: c.whiteColor(),
-                                size: c.deviceWidth(context) * 0.1,
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  gradient: c.buttonGradient(),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.fast_forward_rounded,
+                                  color: c.whiteColor(),
+                                  size: c.deviceWidth(context) * 0.1,
+                                ),
                               ),
                             )
                           ],
@@ -537,22 +598,28 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                                 showModalBottomSheetCupetino();
                               });
                             },
-                            child: Row(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Padding(
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    gradient: c.buttonGradient(),
+                                    shape: BoxShape.circle,
+                                  ),
                                   padding: const EdgeInsets.all(8.0),
                                   child: Icon(
-                                    Icons.playlist_add,
-                                    color: c.primaryColor(),
+                                    Icons.music_note_outlined,
+                                    color: c.whiteColor(),
                                     size: c.deviceWidth(context) * 0.1,
                                   ),
                                 ),
                                 Text("Add To Playlist",
                                     style: TextStyle(
                                         fontSize: c.getFontSizeSmall(context),
-                                        fontWeight: FontWeight.w800,
-                                        color: c.getColor("grey"))),
+                                        fontWeight: FontWeight.bold,
+                                        color: c.whiteColor())),
                               ],
                             )),
                       ],

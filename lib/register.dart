@@ -103,7 +103,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: c.blackColor(),
+        backgroundColor: c.bgColor(),
         body: WillPopScope(
             onWillPop: () => _exitApp(context),
             child: SafeArea(
@@ -153,7 +153,7 @@ class _RegisterState extends State<Register> {
                               Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 17),
                                   child: AutoSizeText(
-                                    'Sign up to continue'.toUpperCase(),
+                                    'Sign up to continue'.toString(),
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                         fontSize: c.getFontSizeSmall(context),
@@ -191,6 +191,7 @@ class _RegisterState extends State<Register> {
                                   ),
                                   hintText: "Name",
                                   fillColor: c.primaryColor(),
+                                  filled: true,
                                   hintStyle: TextStyle(
                                       fontSize: c.getFontSize(context),
                                       color: Colors.white),
@@ -233,6 +234,7 @@ class _RegisterState extends State<Register> {
                                     color: c.whiteColor(),
                                   ),
                                   hintText: "Email",
+                                  filled: true,
                                   fillColor: c.primaryColor(),
                                   hintStyle: TextStyle(
                                       fontSize: c.getFontSize(context),
@@ -310,7 +312,7 @@ class _RegisterState extends State<Register> {
                                   hintStyle: TextStyle(
                                       fontSize: c.getFontSize(context),
                                       color: Colors.white),
-                                  border: OutlineInputBorder(),
+                                  border: OutlineInputBorder(), filled: true,
                                   contentPadding: EdgeInsets.all(16),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25.0),
@@ -351,14 +353,14 @@ class _RegisterState extends State<Register> {
                                     child: Container(
                                       padding: EdgeInsets.all(13),
                                       decoration: BoxDecoration(
-                                        color: c.primaryColor(),
+                                        gradient: c.buttonGradient(),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Center(
                                         child: Text(
                                           "Sign Up",
                                           style: TextStyle(
-                                            color: c.blackColor(),
+                                            color: c.whiteColor(),
                                             fontWeight: FontWeight.w600,
                                             fontSize:
                                                 c.getFontSizeLabel(context),
@@ -407,7 +409,7 @@ class _RegisterState extends State<Register> {
                                         fontFamily: c.fontFamily()),
                                     children: [
                                       TextSpan(
-                                          text: "Already have account? ",
+                                          text: "Already have an account? ",
                                           style: TextStyle(
                                             color: c.whiteColor(),
                                           )),

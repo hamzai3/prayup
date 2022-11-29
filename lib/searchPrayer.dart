@@ -297,7 +297,7 @@ class _SearchPrayerState extends State<SearchPrayer> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
+      backgroundColor: c.bgColor(),
       body: WillPopScope(
         onWillPop: () => _exitApp(context),
         child: SafeArea(
@@ -315,6 +315,7 @@ class _SearchPrayerState extends State<SearchPrayer> {
                         if (value!.isEmpty) {
                           return 'Cannot search nothing, enter keyword';
                         }
+                        return null;
                       },
                       controller: keyword,
                       autocorrect: true,
@@ -349,13 +350,15 @@ class _SearchPrayerState extends State<SearchPrayer> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search, color: c.whiteColor()),
                         hintText: " Search",
+                        filled: true,
+                        fillColor: c.primaryColor(),
                         hintStyle: TextStyle(
                             fontSize: c.getFontSize(context),
                             color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide:
-                              BorderSide(color: c.whiteColor(), width: 1.0),
+                          // borderSide:
+                          //     BorderSide(color: c.whiteColor(), width: 1.0),
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -372,16 +375,18 @@ class _SearchPrayerState extends State<SearchPrayer> {
                   ? Container()
                   : ListView.builder(
                       shrinkWrap: true,
+                      padding: EdgeInsets.all(16),
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: allData.length,
                       itemBuilder: (context, j) {
                         return Container(
                           margin: const EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
+                            gradient: c.buttonGradient(),
                             border: Border.all(
                                 width: 1.0,
                                 color: allData[j]['free'] == "true"
-                                    ? c.whiteColor()
+                                    ? c.primaryColor()
                                     : c.getColor("red")),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20.0)),
@@ -394,7 +399,9 @@ class _SearchPrayerState extends State<SearchPrayer> {
                                 size: Size.fromRadius(c.deviceWidth(context) *
                                     0.1), // Image radius
                                 child: Image.asset(
-                                  "assets/slider/${(random.nextInt(4) + 1)}.png",
+                                  "assets/slider/" +
+                                      c.filename(
+                                          allData[j]['album'].toString()),
                                 ),
                               ),
                             ),
@@ -446,89 +453,119 @@ class _SearchPrayerState extends State<SearchPrayer> {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    if (isPremimum == false) {
-                                      c.showInSnackBar(context,
-                                          "Upgrade your account to download this prayer");
-                                      showAlert(
-                                          context,
-                                          "999",
-                                          "Upgrade your account to access download feature\nOr pay \$9.99 to download this prayer",
-                                          allData[j]);
-                                    } else {
-                                      print("DSonloads is $download");
-                                      if (download > 0) {
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: c.primaryColor(),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 1.0,
+                                        ),
+                                      ]),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (isPremimum == false) {
                                         c.showInSnackBar(context,
-                                            "Prayer is being downloaded and it will be saved in My Downloads");
-                                        c
-                                            .download1(
-                                                dio,
-                                                allData[j]['url'],
-                                                '/' +
-                                                    allData[j]['album']
-                                                        .toString()
-                                                        .replaceAll(" ", "_") +
-                                                    ".mp3")
-                                            .then((value) {
-                                          print("downloaded to $value");
-
-                                          //  var rec = '{"downloaded":}';
-                                          var rec =
-                                              '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
-                                          c
-                                              .getshared("downlaods")
-                                              .then((value) {
-                                            if (value != 'null') {
-                                              value = value + rec;
-                                              c.setshared("downlaods", value);
-                                            } else {
-                                              c.setshared("downlaods", rec);
-                                            }
-                                          });
-                                          c
-                                              .getshared("downlaods")
-                                              .then((value) {
-                                            print(
-                                                "Here affter downlaodsa $value");
-                                          });
-                                          c.updatedDownload(
-                                              download - 1, doc_id);
-
-                                          // c.setshared("Downloaded1", rec);
-                                        });
-                                      } else {
-                                        c.showInSnackBar(context,
-                                            "You have reached maximum download limit");
+                                            "Upgrade your account to download this prayer");
                                         showAlert(
                                             context,
-                                            "599",
-                                            "You have reached maximum download limit\nOr pay \$5.99 to download this prayer",
+                                            "999",
+                                            "Upgrade your account to access download feature\nOr pay \$9.99 to download this prayer",
                                             allData[j]);
+                                      } else {
+                                        print("DSonloads is $download");
+                                        if (download > 0) {
+                                          c.showInSnackBar(context,
+                                              "Prayer is being downloaded and it will be saved in My Downloads");
+                                          c
+                                              .download1(
+                                                  dio,
+                                                  allData[j]['url'],
+                                                  '/' +
+                                                      allData[j]['album']
+                                                          .toString()
+                                                          .replaceAll(
+                                                              " ", "_") +
+                                                      ".mp3")
+                                              .then((value) {
+                                            print("downloaded to $value");
+
+                                            //  var rec = '{"downloaded":}';
+                                            var rec =
+                                                '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
+                                            c
+                                                .getshared("downlaods")
+                                                .then((value) {
+                                              if (value != 'null') {
+                                                value = value + rec;
+                                                c.setshared("downlaods", value);
+                                              } else {
+                                                c.setshared("downlaods", rec);
+                                              }
+                                            });
+                                            c
+                                                .getshared("downlaods")
+                                                .then((value) {
+                                              print(
+                                                  "Here affter downlaodsa $value");
+                                            });
+                                            c.updatedDownload(
+                                                download - 1, doc_id);
+
+                                            // c.setshared("Downloaded1", rec);
+                                          });
+                                        } else {
+                                          c.showInSnackBar(context,
+                                              "You have reached maximum download limit");
+                                          showAlert(
+                                              context,
+                                              "599",
+                                              "You have reached maximum download limit\nOr pay \$5.99 to download this prayer",
+                                              allData[j]);
+                                        }
+                                        // getStatics();
+                                        getData();
                                       }
-                                      // getStatics();
-                                      getData();
-                                    }
-                                  },
-                                  child: Icon(
-                                    Icons.download,
-                                    color: c.whiteColor(),
+                                    },
+                                    child: Icon(
+                                      Icons.file_download_outlined,
+                                      color: c.getPink(),
+                                    ),
                                   ),
                                 ),
-                                allData[j]['free'] == "true"
-                                    ? Icon(
-                                        Icons.play_arrow,
-                                        color: c.whiteColor(),
-                                      )
-                                    : isPremimum == true
-                                        ? Icon(
-                                            Icons.play_arrow,
-                                            color: c.getColor("red"),
-                                          )
-                                        : Icon(
-                                            Icons.lock,
-                                            color: c.getColor("red"),
-                                          ),
+                                Container(
+                                  width: 10,
+                                ),
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: c.primaryColor(),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black,
+                                          blurRadius: 1.0,
+                                        ),
+                                      ]),
+                                  child: allData[j]['free'] == "true"
+                                      ? Icon(
+                                          Icons.play_arrow,
+                                          color: c.getPink(),
+                                        )
+                                      : isPremimum == true
+                                          ? Icon(
+                                              Icons.play_arrow,
+                                              color: c.getColor("red"),
+                                            )
+                                          : Icon(
+                                              Icons.lock,
+                                              color: c.getColor("red"),
+                                            ),
+                                ),
                               ],
                             ),
                             onTap: () {

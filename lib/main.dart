@@ -59,7 +59,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Pray Up',
-      theme: ThemeData(primarySwatch: Colors.grey, fontFamily: c.fontFamily()),
+      theme: ThemeData(
+          primarySwatch: Colors.grey,
+          fontFamily: c.fontFamily(),
+          radioTheme: RadioThemeData(
+            // checkColor: MaterialStateProperty.all(Colors.white),
+            fillColor: MaterialStateProperty.all(Colors.purple),
+          )),
       // theme: ThemeData(
       //   primarySwatch: Colors.grey,
       // ),
@@ -98,8 +104,22 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: c.blackColor(opc: 0.4),
-        body: Center(
-          child: Image.asset("assets/logo.gif"),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF280F48),
+                  const Color(0xFF51002E),
+                  // linear-gradient(180deg, #280F48 0%, #51002E 100%)
+                ],
+                begin: const FractionalOffset(1.0, 0.0),
+                end: const FractionalOffset(1.0, 1.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+          child: Center(
+            child: Image.asset("assets/logo.gif"),
+          ),
         ));
   }
 }

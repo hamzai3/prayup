@@ -33,7 +33,7 @@ class Constants {
   }
 
   primaryColor() {
-    return const Color(0xffE2AF4A);
+    return const Color(0xff552198);
   }
 
   secondaryColor() {
@@ -56,8 +56,38 @@ class Constants {
     return const Color(0xff0B0C0E).withOpacity(opc);
   }
 
+  containerGradient() {
+    return LinearGradient(
+        colors: [
+          const Color(0xFF280F48),
+          const Color(0xFF51002E),
+          // linear-gradient(180deg, #280F48 0%, #51002E 100%)
+        ],
+        begin: const FractionalOffset(2.0, 0.0),
+        end: const FractionalOffset(0.0, 5.0),
+        stops: [0.0, 2.0],
+        tileMode: TileMode.clamp);
+  }
+
+  buttonGradient() {
+    return LinearGradient(
+        colors: [
+          const Color(0xFF552198),
+          const Color(0xFF720041),
+          //inear-gradient(180deg, #552198 0%, #720041 100%)
+        ],
+        begin: const FractionalOffset(1.0, 0.0),
+        end: const FractionalOffset(1.0, 1.0),
+        stops: [0.0, 1.0],
+        tileMode: TileMode.clamp);
+  }
+
   backgroundColor() {
     return const Color(0xff808080);
+  }
+
+  bgColor() {
+    return const Color(0xff170A27);
   }
 
   getFontSizeMedium(context) {
@@ -82,6 +112,41 @@ class Constants {
 
   getFontSizeLarge(context) {
     return deviceHeight(context) * 0.035;
+  }
+
+  filename(str) {
+    // print("\n\n$str\nn");
+    if (str.toString().toLowerCase().contains("birthday")) {
+      return 'birthday.png';
+    } else if (str.toString().toLowerCase().contains("church")) {
+      return 'church.png';
+    } else if (str.toString().toLowerCase().contains("faith")) {
+      return 'faith.png';
+    } else if (str.toString().toLowerCase().contains("family")) {
+      return 'family.png';
+    } else if (str.toString().toLowerCase().contains("healing")) {
+      return 'healing.png';
+    } else if (str.toString().toLowerCase().contains("health")) {
+      return 'health.png';
+    } else if (str.toString().toLowerCase().contains("home")) {
+      return 'home.png';
+    } else if (str.toString().toLowerCase().contains("husband")) {
+      return 'husband.png';
+    } else if (str.toString().toLowerCase().contains("marriage")) {
+      return 'marriage.png';
+    } else if (str.toString().toLowerCase().contains("pastor")) {
+      return 'pastor.png';
+    } else if (str.toString().toLowerCase().contains("promotion")) {
+      return 'promotion.png';
+    } else if (str.toString().toLowerCase().contains("son")) {
+      return 'son.png';
+    } else if (str.toString().toLowerCase().contains("studies")) {
+      return 'studies.png';
+    } else if (str.toString().toLowerCase().contains("wife")) {
+      return 'wife.png';
+    } else {
+      return 'faith.png';
+    }
   }
 
   getColor(str) {
@@ -114,6 +179,10 @@ class Constants {
 
   getURL() {
     return 'https://prayup.alliedtechnologies.co/';
+  }
+
+  getPink() {
+    return const Color(0xffFE2DA3);
   }
 
   getAppBar(title, context, {transition = false}) {

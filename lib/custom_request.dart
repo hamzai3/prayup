@@ -120,20 +120,22 @@ class _CustomRequestState extends State<CustomRequest> {
     // getCustomRequest();
   }
 
+  var gender_val = '';
+  bool male = false, female = false, other = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
-      appBar: CupertinoNavigationBar(
-        backgroundColor: c.blackColor(),
-        middle: Text(
-          'Custom Prayer',
-          style:
-              TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
-        ),
-      ),
+      backgroundColor: c.bgColor(),
+      // appBar: CupertinoNavigationBar(
+      //   backgroundColor: c.bgColor(),
+      //   middle: Text(
+      //     'Custom Prayer',
+      //     style:
+      //         TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
+      //   ),
+      // ),
       body: SafeArea(
         child: ListView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -190,11 +192,26 @@ class _CustomRequestState extends State<CustomRequest> {
                                       .toString(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: c.getFontSizeSmall(context),
+                                      fontSize: c.getFontSizeSmall(context) - 4,
                                       // fontWeight: FontWeight.w800,
                                       color: c.getColor("grey")),
                                 )),
                           ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 17),
+                              child: AutoSizeText(
+                                'Requestor',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: c.whiteColor(),
+                                  fontFamily: c.fontFamily(),
+                                  fontSize: c.getFontSizeMedium(context) + 3,
+                                ),
+                              )),
                         ],
                       ),
                       c.getDivider(c.deviceHeight(context) * 0.01),
@@ -217,18 +234,14 @@ class _CustomRequestState extends State<CustomRequest> {
                             controller: fname,
                             style: TextStyle(
                                 fontSize: c.getFontSize(context),
-                                color: Colors.black),
+                                color: Colors.white),
                             decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Your Name",
+                              hintText: "Name",
                               filled: true,
-                              fillColor: c.whiteColor(),
+                              fillColor: c.primaryColor(),
                               hintStyle: TextStyle(
                                   fontSize: c.getFontSize(context),
-                                  color: Colors.black),
+                                  color: Colors.white),
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.all(16),
                               enabledBorder: OutlineInputBorder(
@@ -260,18 +273,14 @@ class _CustomRequestState extends State<CustomRequest> {
                             controller: email,
                             style: TextStyle(
                                 fontSize: c.getFontSize(context),
-                                color: Colors.black),
+                                color: Colors.white),
                             decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Your Email",
+                              hintText: "Email",
                               filled: true,
-                              fillColor: c.whiteColor(),
+                              fillColor: c.primaryColor(),
                               hintStyle: TextStyle(
                                   fontSize: c.getFontSize(context),
-                                  color: Colors.black),
+                                  color: Colors.white),
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.all(16),
                               enabledBorder: OutlineInputBorder(
@@ -284,136 +293,105 @@ class _CustomRequestState extends State<CustomRequest> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.height * 0.02,
-                          right: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.080,
-                          width: MediaQuery.of(context).size.width * 8.0,
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                // return 'Mobile number is mandatory';
-                                return 'Recipient first name cannot be empty';
-                              }
-                            },
-                            controller: recipent_fname,
-                            style: TextStyle(
-                                fontSize: c.getFontSize(context),
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Recipient First Name",
-                              filled: true,
-                              fillColor: c.whiteColor(),
-                              hintStyle: TextStyle(
-                                  fontSize: c.getFontSize(context),
-                                  color: Colors.black),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.all(16),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: c.primaryColor(),
+                      Row(
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 17, vertical: 10),
+                              child: AutoSizeText(
+                                'Recipient',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: c.whiteColor(),
+                                  fontFamily: c.fontFamily(),
+                                  fontSize: c.getFontSizeMedium(context) + 3,
+                                ),
+                              )),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.height * 0.02,
+                            ),
+                            child: SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.080,
+                              width: MediaQuery.of(context).size.width * 0.39,
+                              child: TextFormField(
+                                keyboardType: TextInputType.text,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    // return 'Mobile number is mandatory';
+                                    return 'Recipient first name cannot be empty';
+                                  }
+                                },
+                                controller: recipent_fname,
+                                style: TextStyle(
+                                    fontSize: c.getFontSize(context),
+                                    color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText: "First Name",
+                                  filled: true,
+                                  fillColor: c.primaryColor(),
+                                  hintStyle: TextStyle(
+                                      fontSize: c.getFontSize(context),
+                                      color: Colors.white),
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.all(16),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    borderSide: BorderSide(
+                                      color: c.primaryColor(),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.height * 0.02,
-                          right: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.080,
-                          width: MediaQuery.of(context).size.width * 8.0,
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                // return 'Mobile number is mandatory';
-                                return 'Recipient last name cannot be empty';
-                              }
-                            },
-                            controller: recipent_lname,
-                            style: TextStyle(
-                                fontSize: c.getFontSize(context),
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Recipient Last Name",
-                              filled: true,
-                              fillColor: c.whiteColor(),
-                              hintStyle: TextStyle(
-                                  fontSize: c.getFontSize(context),
-                                  color: Colors.black),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.all(16),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: c.primaryColor(),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: MediaQuery.of(context).size.height * 0.02,
+                            ),
+                            child: SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.080,
+                              width: MediaQuery.of(context).size.width * 0.39,
+                              child: TextFormField(
+                                keyboardType: TextInputType.text,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    // return 'Mobile number is mandatory';
+                                    return 'Recipient last name cannot be empty';
+                                  }
+                                },
+                                controller: recipent_lname,
+                                style: TextStyle(
+                                    fontSize: c.getFontSize(context),
+                                    color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText: "Last Name",
+                                  filled: true,
+                                  fillColor: c.primaryColor(),
+                                  hintStyle: TextStyle(
+                                      fontSize: c.getFontSize(context),
+                                      color: Colors.white),
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.all(16),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    borderSide: BorderSide(
+                                      color: c.primaryColor(),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.height * 0.02,
-                          right: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.080,
-                          width: MediaQuery.of(context).size.width * 8.0,
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                // return 'Mobile number is mandatory';
-                                return 'Recipient Gender cannot be empty';
-                              }
-                            },
-                            controller: gender,
-                            style: TextStyle(
-                                fontSize: c.getFontSize(context),
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Recipient Gender",
-                              filled: true,
-                              fillColor: c.whiteColor(),
-                              hintStyle: TextStyle(
-                                  fontSize: c.getFontSize(context),
-                                  color: Colors.black),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.all(16),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: c.primaryColor(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.height * 0.02,
@@ -433,18 +411,14 @@ class _CustomRequestState extends State<CustomRequest> {
                             controller: recipent_email,
                             style: TextStyle(
                                 fontSize: c.getFontSize(context),
-                                color: Colors.black),
+                                color: Colors.white),
                             decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Recipient Email",
+                              hintText: "Email",
                               filled: true,
-                              fillColor: c.whiteColor(),
+                              fillColor: c.primaryColor(),
                               hintStyle: TextStyle(
                                   fontSize: c.getFontSize(context),
-                                  color: Colors.black),
+                                  color: Colors.white),
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.all(16),
                               enabledBorder: OutlineInputBorder(
@@ -457,107 +431,133 @@ class _CustomRequestState extends State<CustomRequest> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.height * 0.02,
-                            right: MediaQuery.of(context).size.height * 0.02,
-                            bottom: 10),
-                        child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.07,
-                            width: MediaQuery.of(context).size.width * 8.0,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: c.whiteColor(),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: DropdownButton<String>(
-                                iconEnabledColor: Colors.white,
-                                hint: Text("Select Category"),
-                                value: selected_cat,
-                                items: <String>[
-                                  "Select Category",
-                                  "Health",
-                                  "Finances",
-                                  "Family",
-                                  "Job",
-                                  "School",
-                                  "Wife",
-                                  "healing",
-                                  "new Home",
-                                  "car ",
-                                  "faith",
-                                  "studies",
-                                  "ministry",
-                                  "pastor ",
-                                  "Church",
-                                  "husband",
-                                  "Mother",
-                                  "father",
-                                  "Son",
-                                  "Daughter",
-                                  "birthday ",
-                                  "anniversary",
-                                  "marriage",
-                                  "promotion ",
-                                  "Other"
-                                ].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      c.capitalize(value),
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (s) {
+                      Row(
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 17, vertical: 10),
+                              child: AutoSizeText(
+                                'Gender',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: c.whiteColor(),
+                                  fontFamily: c.fontFamily(),
+                                  fontSize: c.getFontSizeMedium(context) + 3,
+                                ),
+                              )),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            children: [
+                              Radio(
+                                groupValue: 'male',
+                                activeColor: c.primaryColor(),
+                                // shape: RoundedRectangleBorder(
+                                //     borderRadius: BorderRadius.circular(400)),
+                                value: gender_val,
+                                onChanged: (newValue) {
                                   setState(() {
-                                    selected_cat = s!;
+                                    gender_val = "male";
                                   });
                                 },
                               ),
-                            )),
+                              Text(
+                                "Male",
+                                style: TextStyle(
+                                    color: c.whiteColor(),
+                                    fontSize: c.getFontSizeSmall(context) - 4),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Radio(
+                                groupValue: 'female',
+                                activeColor: c.primaryColor(),
+                                // shape: RoundedRectangleBorder(
+                                //     borderRadius: BorderRadius.circular(400)),
+                                value: gender_val,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    gender_val = "female";
+                                  });
+                                },
+                              ),
+                              Text(
+                                "Female",
+                                style: TextStyle(
+                                    color: c.whiteColor(),
+                                    fontSize: c.getFontSizeSmall(context) - 4),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Radio(
+                                groupValue: 'other',
+                                activeColor: c.primaryColor(),
+                                // shape: RoundedRectangleBorder(
+                                //     borderRadius: BorderRadius.circular(400)),
+                                value: gender_val,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    gender_val = "other";
+                                  });
+                                },
+                              ),
+                              Text(
+                                "Other",
+                                style: TextStyle(
+                                    color: c.whiteColor(),
+                                    fontSize: c.getFontSizeSmall(context) - 4),
+                              )
+                            ],
+                          ),
+                        ],
                       ),
+
                       Padding(
                         padding: EdgeInsets.only(
                             left: MediaQuery.of(context).size.height * 0.02,
                             right: MediaQuery.of(context).size.height * 0.02,
                             bottom: 30),
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
+                          height: MediaQuery.of(context).size.height * 0.15,
                           width: MediaQuery.of(context).size.width * 8.0,
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                // return 'Mobile number is mandatory';
-                                return 'Prayer note cannot be empty';
-                              }
-                            },
-                            controller: note,
-                            style: TextStyle(
-                                fontSize: c.getFontSize(context),
-                                color: Colors.black),
-                            minLines: 5,
-                            maxLines: 8,
-                            maxLength: 30,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.email_outlined,
-                                color: c.whiteColor(),
-                              ),
-                              hintText: "Nature Of Prayer",
-                              filled: true,
-                              fillColor: c.whiteColor(),
-                              hintStyle: TextStyle(
+                          child: Theme(
+                            data: ThemeData.dark(),
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  // return 'Mobile number is mandatory';
+                                  return 'Prayer note cannot be empty';
+                                }
+                              },
+                              controller: note,
+                              style: TextStyle(
                                   fontSize: c.getFontSize(context),
-                                  color: Colors.black),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.all(16),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: c.primaryColor(),
+                                  color: Colors.white),
+                              minLines: 5,
+                              maxLines: 8,
+                              maxLength: 50,
+                              decoration: InputDecoration(
+                                hintText: "Nature Of Prayer",
+                                filled: true,
+                                fillColor: c.primaryColor(),
+                                hintStyle: TextStyle(
+                                    fontSize: c.getFontSize(context),
+                                    color: Colors.white),
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.all(16),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(
+                                    color: c.primaryColor(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -585,15 +585,15 @@ class _CustomRequestState extends State<CustomRequest> {
                                 child: Container(
                                   padding: EdgeInsets.all(13),
                                   decoration: BoxDecoration(
+                                    gradient: c.buttonGradient(),
                                     color: c.primaryColor(),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "Request",
+                                      "Make a Request",
                                       style: TextStyle(
-                                        color: c.blackColor(),
-                                        fontWeight: FontWeight.w600,
+                                        color: c.whiteColor(),
                                         fontSize: c.getFontSizeLabel(context),
                                       ),
                                     ),

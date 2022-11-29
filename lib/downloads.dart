@@ -86,20 +86,34 @@ class _MyDownloadsState extends State<MyDownloads> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: c.blackColor(),
-      appBar: CupertinoNavigationBar(
-        backgroundColor: c.blackColor(),
-        middle: Text(
-          'MyDownloads',
-          style:
-              TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
-        ),
-      ),
+      backgroundColor: c.bgColor(),
+      // appBar: CupertinoNavigationBar(
+      //   backgroundColor: c.blackColor(),
+      //   middle: Text(
+      //     'My Downloads',
+      //     style:
+      //         TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
+      //   ),
+      // ),
       body: WillPopScope(
         onWillPop: () => _exitApp(context),
         child: SafeArea(
           child: ListView(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'My Downloads',
+                      style: TextStyle(
+                          fontSize: c.getFontSizeLarge(context) - 5,
+                          color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
               ListTile(
                 title: Padding(
                   padding: EdgeInsets.only(
@@ -146,6 +160,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search, color: c.whiteColor()),
                         hintText: " Search in downloads",
+                        fillColor: c.primaryColor(),
+                        filled: true,
                         hintStyle: TextStyle(
                             fontSize: c.getFontSize(context),
                             color: Colors.white),
@@ -172,10 +188,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                   : noData
                       ? Center(
                           child: Text(
-                          "No Prayers added",
+                          "There are no downloaded prayers",
                           style: TextStyle(
                               fontSize: c.getFontSizeSmall(context),
-                              fontWeight: FontWeight.w800,
+                              // fontWeight: FontWeight.w800,
                               color: c.whiteColor()),
                         ))
                       : ListView.builder(
