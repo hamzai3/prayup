@@ -49,11 +49,28 @@ class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final db = FirebaseFirestore.instance;
   CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('prayers');
+      FirebaseFirestore.instance.collection('men_audio');
   var allData;
   bool isLoading = true;
   getData() async {
+    // <-- Updated data
+
     QuerySnapshot querySnapshot = await _collectionRef.get();
+    // Get data from docs and convert map to List
+    // setState(() {
+    //   List doc_id = [];
+    //   var mydoc_id;
+    //   List allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    //   querySnapshot.docs.forEach((element) {
+    //     print("docs are ");
+    //     doc_id.add(element.id);
+    //   });
+
+    //   for (int u = 0; u < allData.length; u++) {
+    //     _collectionRef.doc(doc_id[u]).update({'free': 'true'});
+    //   }
+    // });
+
     // Get data from docs and convert map to List
     setState(() {
       allData = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -61,6 +78,7 @@ class _HomeState extends State<Home> {
       isLoading = false;
     });
     c.getshared("UserName").then((value) {
+      print("Values is $value");
       if (value != 'null') {
         print("IUserame is $value");
         c.isUpdated(value).then((snapshot) {
@@ -70,8 +88,9 @@ class _HomeState extends State<Home> {
               play = int.parse(snapshot['play'].toString());
               download = int.parse(snapshot['download'].toString());
               isPremimum = snapshot['premium'] == "NO" ? false : true;
-              subscribed_on =
-                  DateTime.parse(snapshot['subscribed_on'].toString());
+              subscribed_on = snapshot['subscribed_on'].toString() != 'NO'
+                  ? DateTime.parse(snapshot['subscribed_on'].toString())
+                  : DateTime.now();
               mon_donwload_limit =
                   int.parse(snapshot['download_limit'].toString());
               mon_play_limit = int.parse(snapshot['play_limit'].toString());
@@ -99,6 +118,14 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    c.getshared("UserName").then((value) {
+      print("Values is $value");
+      if (value != 'null') {
+        setState(() {
+          username = value;
+        });
+      }
+    });
     getData();
     // getStatics();
   }
@@ -175,6 +202,7 @@ class _HomeState extends State<Home> {
         children: [
           Text(
             "Download Prayer",
+            textAlign: TextAlign.start,
             style: TextStyle(color: c.getPink(), fontWeight: FontWeight.w800),
           ),
           GestureDetector(
@@ -206,7 +234,9 @@ class _HomeState extends State<Home> {
               child: TextButton(
                 child: Text(
                   "Upgrade Account",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: c.getFontSizeXS(context) - 3),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -226,7 +256,9 @@ class _HomeState extends State<Home> {
               child: TextButton(
                 child: Text(
                   "Pay \$$disp_amount ",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: c.getFontSizeXS(context) - 3),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop("cancel");
@@ -375,7 +407,7 @@ class _HomeState extends State<Home> {
                                       child: Image.asset(
                                         "assets/slider/" +
                                             c.filename(
-                                                allData[j]['album'].toString()),
+                                                allData[j]['c'].toString()),
                                       ),
                                     ),
                                     Container(
@@ -450,7 +482,7 @@ class _HomeState extends State<Home> {
                                             TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: allData[j]['title'],
+                                                  text: allData[j]['t'] ?? '',
                                                   style: TextStyle(
                                                       fontSize:
                                                           c.getFontSizeSmall(
@@ -473,20 +505,7 @@ class _HomeState extends State<Home> {
                                             TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: allData[j]['artist'] +
-                                                      "\n",
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          c.getFontSizeSmall(
-                                                                  context) -
-                                                              5,
-                                                      fontWeight:
-                                                          FontWeight.w100,
-                                                      color: const Color(
-                                                          0xffEF83C0)),
-                                                ),
-                                                TextSpan(
-                                                  text: allData[j]['album'],
+                                                  text: allData[j]['c'] ?? "",
                                                   style: TextStyle(
                                                       fontSize:
                                                           c.getFontSizeSmall(
@@ -546,6 +565,8 @@ class _HomeState extends State<Home> {
                                                                   allData[j]);
                                                               break;
                                                             } else {
+                                                              print(
+                                                                  "Donwloading this ${(allData[j])}");
                                                               //this will run
                                                               c
                                                                   .updatedDownload(
@@ -562,9 +583,9 @@ class _HomeState extends State<Home> {
                                                                         dio,
                                                                         allData[j]
                                                                             [
-                                                                            'url'],
+                                                                            'u'],
                                                                         '/' +
-                                                                            allData[j]['album'].toString().replaceAll(" ",
+                                                                            allData[j]['t'].toString().replaceAll(" ",
                                                                                 "_") +
                                                                             ".mp3")
                                                                     .then(
@@ -574,7 +595,7 @@ class _HomeState extends State<Home> {
 
                                                                   //  var rec = '{"downloaded":}';
                                                                   var rec =
-                                                                      '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
+                                                                      '{"url":"$value","allbum":"${(allData[j]['t'].toString())}","artist":"${(allData[j]['c'])}","duration":"${(allData[j]['duration'])}"},';
                                                                   c
                                                                       .getshared(
                                                                           "downlaods")
@@ -717,7 +738,7 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                     context,
                     CupertinoPageRoute(
-                        builder: (context) => AudioPlayerPage(
+                        builder: (context) => MyPlayer(
                               data: loop_id,
                             )));
               });
@@ -843,14 +864,14 @@ class _HomeState extends State<Home> {
         c.showInSnackBar(context,
             "Prayer is being downloaded and it will be saved in My Downloads");
         c
-            .download1(dio, allData['url'],
+            .download1(dio, allData['u'],
                 '/' + allData['album'].toString().replaceAll(" ", "_") + ".mp3")
             .then((value) {
           print("downloaded to $value");
 
           //  var rec = '{"downloaded":}';
           var rec =
-              '{"url":"$value","allbum":"${(allData['album'].toString())}","artist":"${(allData['artist'])}","duration":"${(allData['duration'])}"},';
+              '{"url":"$value","allbum":"${(allData['t'].toString())}","artist":"${(allData['c'])}","duration":"${(allData['duration'])}"},';
           c.getshared("downlaods").then((value) {
             if (value != 'null') {
               value = value + rec;

@@ -142,157 +142,152 @@ class _PlayListState extends State<PlayList> {
       appBar: CupertinoNavigationBar(
         backgroundColor: c.primaryColor(),
         middle: Text(
-          'PlayList',
+          'Playlist',
           style:
               TextStyle(fontSize: c.getFontSize(context), color: Colors.white),
         ),
       ),
-      body: WillPopScope(
-        onWillPop: () => _exitApp(context),
-        child: SafeArea(
-          child: ListView(
-            children: [
-              ListTile(
-                title: Padding(
-                  padding: EdgeInsets.only(
-                    top: 10.0,
-                  ),
-                  child: SizedBox(
-                    child: TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Cannot PlayList nothing, enter keyword';
+      body: SafeArea(
+        child: ListView(
+          children: [
+            ListTile(
+              title: Padding(
+                padding: EdgeInsets.only(
+                  top: 10.0,
+                ),
+                child: SizedBox(
+                  child: TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Cannot Playlist nothing, enter keyword';
+                      }
+                    },
+                    controller: keyword,
+                    autocorrect: true,
+                    style: TextStyle(
+                        fontSize: c.getFontSize(context), color: Colors.white),
+                    onChanged: (s) {
+                      setState(() {
+                        if (s.isNotEmpty) {
+                          if (temp_data.isEmpty) {
+                            temp_data = allData;
+                          }
+                          allData = [];
+                          for (int d = 0; d < temp_data.length; d++) {
+                            print(temp_data[d]['name'].toString());
+                            print(s.toString());
+                            if (s.toString() == 'All' ||
+                                s.toString() == 'Select Category') {
+                              allData.add(temp_data[d]);
+                            } else if (temp_data[d]['name']
+                                .toString()
+                                .toLowerCase()
+                                .contains(s.toString().toLowerCase())) {
+                              allData.add(temp_data[d]);
+                            }
+                          }
+                        } else {
+                          allData = temp_data;
                         }
-                      },
-                      controller: keyword,
-                      autocorrect: true,
-                      style: TextStyle(
+                      });
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      ),
+                      fillColor: c.primaryColor(),
+                      filled: true,
+                      hintText: " Search Playlist",
+                      hintStyle: TextStyle(
                           fontSize: c.getFontSize(context),
                           color: Colors.white),
-                      onChanged: (s) {
-                        setState(() {
-                          if (s.isNotEmpty) {
-                            if (temp_data.isEmpty) {
-                              temp_data = allData;
-                            }
-                            allData = [];
-                            for (int d = 0; d < temp_data.length; d++) {
-                              print(temp_data[d]['name'].toString());
-                              print(s.toString());
-                              if (s.toString() == 'All' ||
-                                  s.toString() == 'Select Category') {
-                                allData.add(temp_data[d]);
-                              } else if (temp_data[d]['name']
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(s.toString().toLowerCase())) {
-                                allData.add(temp_data[d]);
-                              }
-                            }
-                          } else {
-                            allData = temp_data;
-                          }
-                        });
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
-                        fillColor: c.primaryColor(),
-                        filled: true,
-                        hintText: " Search Playlist",
-                        hintStyle: TextStyle(
-                            fontSize: c.getFontSize(context),
-                            color: Colors.white),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide:
-                              BorderSide(color: c.primaryColor(), width: 1.0),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(
-                              style: BorderStyle.none, color: c.primaryColor()),
-                        ),
-                        contentPadding: EdgeInsets.all(16),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide:
+                            BorderSide(color: c.primaryColor(), width: 1.0),
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(
+                            style: BorderStyle.none, color: c.primaryColor()),
+                      ),
+                      contentPadding: EdgeInsets.all(16),
                     ),
                   ),
                 ),
               ),
-              isLoading
-                  ? Container()
-                  : noData
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "No Playlist",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: allData.length,
-                          itemBuilder: (context, j) {
-                            return Container(
-                              padding: EdgeInsets.all(5),
-                              margin: const EdgeInsets.all(5.0),
-                              decoration: BoxDecoration(
-                                gradient: c.buttonGradient(),
-                                border: Border.all(
-                                    width: 1.0,
-                                    color: allData[j]['free'] == "true"
-                                        ? c.primaryColor()
-                                        : c.getColor("red")),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(20.0)),
-                              ),
-                              child: ListTile(
-                                leading: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.circular(20), // Image border
-                                  child: SizedBox.fromSize(
-                                    size: Size.fromRadius(
-                                        c.deviceWidth(context) *
-                                            0.1), // Image radius
-                                    child: Image.asset(
-                                      "assets/banner/Group ${(random.nextInt(4) + 1)}.png",
-                                    ),
+            ),
+            isLoading
+                ? Container()
+                : noData
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "No Playlist",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: allData.length,
+                        itemBuilder: (context, j) {
+                          return Container(
+                            padding: EdgeInsets.all(5),
+                            margin: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              gradient: c.buttonGradient(),
+                              border: Border.all(
+                                  width: 1.0,
+                                  color: allData[j]['free'] == "true"
+                                      ? c.primaryColor()
+                                      : c.getColor("red")),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20.0)),
+                            ),
+                            child: ListTile(
+                              leading: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(20), // Image border
+                                child: SizedBox.fromSize(
+                                  size: Size.fromRadius(c.deviceWidth(context) *
+                                      0.1), // Image radius
+                                  child: Image.asset(
+                                    "assets/banner/Group ${(random.nextInt(4) + 1)}.png",
                                   ),
                                 ),
-                                title: AutoSizeText(
-                                  c.capitalize(allData[j]['name']),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                      fontSize: c.getFontSizeSmall(context),
-                                      fontWeight: FontWeight.w800,
-                                      color: c.getColor("grey")),
-                                ),
-                                trailing: Icon(
-                                  Icons.play_arrow,
-                                  color: c.whiteColor(),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) => SearchPrayer(
-                                                playlist: allData[j]['name'],
-                                              )));
-                                },
                               ),
-                            );
-                          },
-                        ),
-            ],
-          ),
+                              title: AutoSizeText(
+                                c.capitalize(allData[j]['name']),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: c.getFontSizeSmall(context),
+                                    fontWeight: FontWeight.w800,
+                                    color: c.getColor("grey")),
+                              ),
+                              trailing: Icon(
+                                Icons.play_arrow,
+                                color: c.whiteColor(),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => SearchPrayer(
+                                              playlist: allData[j]['name'],
+                                            )));
+                              },
+                            ),
+                          );
+                        },
+                      ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNav(currentPage: 1),

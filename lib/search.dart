@@ -166,7 +166,9 @@ class _SearchState extends State<Search> {
                       },
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search, color: c.whiteColor()),
-                        hintText: " Search",
+                        hintText: widget.playlist != null
+                            ? "Search Prayer"
+                            : "Search",
                         hintStyle: TextStyle(
                             fontSize: c.getFontSize(context),
                             color: Colors.white),

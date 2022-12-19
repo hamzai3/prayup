@@ -57,6 +57,8 @@ class _LoginState extends State<Login> {
         });
 
         for (int u = 0; u < allData.length; u++) {
+          // _collectionRef_men.doc(doc_id[u]).add({'free': 'true'});
+
           if (allData[u]['email'] == email.toString()) {
             // allData = (allData[u]);
             mydoc_id = (doc_id[u]);
@@ -122,7 +124,7 @@ class _LoginState extends State<Login> {
                             child: Container(
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    left: 20, right: 20, top: 20),
+                                    left: 20, right: 20, top: 50),
                                 child: Container(
                                     child: Image.asset(
                                   "assets/logo.png",
@@ -495,7 +497,7 @@ class _ForgotState extends State<Forgot> {
                             child: Container(
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    left: 20, right: 20, top: 20),
+                                    left: 20, right: 20, top: 50),
                                 child: Container(
                                     child: Image.asset(
                                   "assets/logo.png",

@@ -64,6 +64,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 Text(
                   "Custom Prayer Request",
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                       color: c.getPink(), fontWeight: FontWeight.w800),
                 ),
@@ -123,7 +124,9 @@ class _ProfileState extends State<Profile> {
                     child: TextButton(
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: c.whiteColor()),
+                        style: TextStyle(
+                            color: c.whiteColor(),
+                            fontSize: c.getFontSizeXS(context) - 3),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -143,7 +146,9 @@ class _ProfileState extends State<Profile> {
                     child: TextButton(
                       child: Text(
                         "Continue",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: c.getFontSizeXS(context) - 3),
                       ),
                       onPressed: () {
                         if (terms) {
@@ -179,7 +184,6 @@ class _ProfileState extends State<Profile> {
   CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('users');
 
-  final String _collection = 'collectionName';
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   @override
@@ -259,23 +263,25 @@ class _ProfileState extends State<Profile> {
         });
       }
     });
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        isPremimum = false;
-      });
-    });
+    // Future.delayed(Duration(seconds: 2), () {
+    //   setState(() {
+    //     isPremimum = false;
+    //   });
+    // });
   }
 
   bool isPremimum = false;
   void showModalBottomSheetCupetino() async {
     await showCupertinoModalBottomSheet(
+      elevation: 10,
+      barrierColor: Color.fromARGB(81, 23, 10, 39),
       useRootNavigator: true,
       context: context,
       bounce: true,
       isDismissible: true,
-      backgroundColor: const Color(0xff6B5A00),
+      backgroundColor: Colors.white,
       builder: (context) => Material(
-        color: const Color(0xff6B5A00),
+        color: c.primaryColor(),
         child: ListView(
           shrinkWrap: true,
           // mainAxisSize: MainAxisSize.min,
@@ -283,8 +289,8 @@ class _ProfileState extends State<Profile> {
             Container(
               margin: const EdgeInsets.all(5.0),
               padding: const EdgeInsets.all(5.0),
-              decoration: const BoxDecoration(
-                color: const Color(0xff6B5A00),
+              decoration: BoxDecoration(
+                color: c.primaryColor(),
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.white,
@@ -320,8 +326,8 @@ class _ProfileState extends State<Profile> {
             Container(
               margin: const EdgeInsets.all(5.0),
               padding: const EdgeInsets.all(5.0),
-              decoration: const BoxDecoration(
-                color: const Color(0xff6B5A00),
+              decoration: BoxDecoration(
+                color: c.primaryColor(),
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.white,
@@ -371,8 +377,8 @@ class _ProfileState extends State<Profile> {
             Container(
               margin: const EdgeInsets.all(5.0),
               padding: const EdgeInsets.all(5.0),
-              decoration: const BoxDecoration(
-                color: const Color(0xff6B5A00),
+              decoration: BoxDecoration(
+                color: c.primaryColor(),
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.white,
@@ -422,8 +428,8 @@ class _ProfileState extends State<Profile> {
             Container(
               margin: const EdgeInsets.all(5.0),
               padding: const EdgeInsets.all(5.0),
-              decoration: const BoxDecoration(
-                color: const Color(0xff6B5A00),
+              decoration: BoxDecoration(
+                color: c.primaryColor(),
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.white,
@@ -543,16 +549,16 @@ class _ProfileState extends State<Profile> {
                           backgroundColor: c.getPink(),
                           size: c.deviceWidth(context) * 0.3,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            c.showInSnackBar(context,
-                                "Camera permissions not found, try again");
-                          },
-                          child: Icon(
-                            Icons.edit,
-                            color: c.whiteColor(),
-                          ),
-                        ),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     c.showInSnackBar(context,
+                        //         "Camera permissions not found, try again");
+                        //   },
+                        //   child: Icon(
+                        //     Icons.edit,
+                        //     color: c.whiteColor(),
+                        //   ),
+                        // ),
                       ],
                     ),
                     c.getDivider(c.deviceHeight(context) * 0.03),
@@ -719,7 +725,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                    isPremimum
+                    !isPremimum
                         ? Container()
                         : Container(
                             margin: const EdgeInsets.all(5.0),
@@ -955,7 +961,7 @@ class _ProfileState extends State<Profile> {
                         Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            "Version 1.0.8",
+                            "Version 1.0.19",
                             style: TextStyle(
                               color: c.getColor("grey"),
                               fontSize: c.getFontSizeLabel(context) - 2,

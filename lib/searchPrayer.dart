@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:terry/SamplePlayer.dart';
 import 'package:terry/audio_player.dart';
 import 'package:terry/bottomNav.dart';
 import 'package:terry/constants.dart';
@@ -50,7 +51,7 @@ class _SearchPrayerState extends State<SearchPrayer> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final db = FirebaseFirestore.instance;
   CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('prayers');
+      FirebaseFirestore.instance.collection('men_audio');
   var allData, playlistData;
   bool isLoading = true, noData = false;
   getData() async {
@@ -71,9 +72,83 @@ class _SearchPrayerState extends State<SearchPrayer> {
               play = int.parse(snapshot['play'].toString());
               download = int.parse(snapshot['download'].toString());
               isPremimum = snapshot['premium'] == "NO" ? false : true;
+              subscribed_on = snapshot['subscribed_on'].toString() != 'NO'
+                  ? DateTime.parse(snapshot['subscribed_on'].toString())
+                  : DateTime.now();
+              mon_donwload_limit =
+                  int.parse(snapshot['download_limit'].toString());
+              mon_play_limit = int.parse(snapshot['play_limit'].toString());
+              for_days = int.parse(snapshot['for_days'].toString());
             });
           }
         });
+      }
+    });
+    c.getshared("MyDocId").then((value) {
+      if (value != 'null') {
+        setState(() {
+          doc_id = value;
+        });
+      }
+    });
+    print("Finally my play is $play and downlaod is $download");
+  }
+
+  getPlayListDataNew() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('playlists_prayers').get();
+    // Get data from docs and convert map to List
+    setState(() {
+      allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+      // print("Hey data is $allData");
+      isLoading = false;
+    });
+    c.getshared("UserName").then((value) {
+      if (value != 'null') {
+        print("IUserame is $value");
+        c.isUpdated(value).then((snapshot) {
+          print("IUserame is $snapshot");
+          if (snapshot != false) {
+            setState(() {
+              play = int.parse(snapshot['play'].toString());
+              download = int.parse(snapshot['download'].toString());
+              isPremimum = snapshot['premium'] == "NO" ? false : true;
+              subscribed_on = snapshot['subscribed_on'].toString() != 'NO'
+                  ? DateTime.parse(snapshot['subscribed_on'].toString())
+                  : DateTime.now();
+              mon_donwload_limit =
+                  int.parse(snapshot['download_limit'].toString());
+              mon_play_limit = int.parse(snapshot['play_limit'].toString());
+              for_days = int.parse(snapshot['for_days'].toString());
+            });
+          }
+        });
+        var temp = [];
+        print("username $username");
+        if (allData.length > 0) {
+          for (int i = 0; i < allData.length; i++) {
+            if (allData[i]['email'] != username) {
+              allData.removeAt(i);
+            } else {
+              if (allData[i]['playlist_name'].toString().toLowerCase() ==
+                  widget.playlist.toString().toLowerCase()) {
+                temp.add(allData[i]['prayer']);
+                print("Plat data is" + temp.toString());
+              }
+            }
+          }
+          allData = temp;
+          print(allData.length);
+          if (allData.length > 0) {
+            noData = true;
+          }
+          isLoading = false;
+          print(widget.playlist);
+          print(allData);
+          print("final playlist data is $allData");
+        } else {
+          noData = true;
+        }
       }
     });
     c.getshared("MyDocId").then((value) {
@@ -93,14 +168,16 @@ class _SearchPrayerState extends State<SearchPrayer> {
     setState(() {
       allData = querySnapshot.docs.map((doc) => doc.data()).toList();
       var temp = [];
-      print(allData);
+      print("username $username");
       if (allData.length > 0) {
         for (int i = 0; i < allData.length; i++) {
           if (allData[i]['email'] != username) {
             allData.removeAt(i);
           } else {
-            if (allData[i]['playlist_name'] == widget.playlist) {
+            if (allData[i]['playlist_name'].toString().toLowerCase() ==
+                widget.playlist.toString().toLowerCase()) {
               temp.add(allData[i]['prayer']);
+              print("Plat data is" + temp.toString());
             }
           }
         }
@@ -110,6 +187,8 @@ class _SearchPrayerState extends State<SearchPrayer> {
           noData = true;
         }
         isLoading = false;
+        print(widget.playlist);
+        print(allData);
         print("final playlist data is $allData");
       } else {
         noData = true;
@@ -120,11 +199,21 @@ class _SearchPrayerState extends State<SearchPrayer> {
   var username;
   Random random = new Random();
   int play = 0, download = 0;
+  late DateTime subscribed_on;
+  int for_days = 0, mon_play_limit = 0, mon_donwload_limit = 0;
   @override
   void initState() {
     super.initState();
+    c.getshared("UserName").then((value) {
+      print("Values is $value");
+      if (value != 'null') {
+        setState(() {
+          username = value;
+        });
+      }
+    });
     if (widget.playlist != null) {
-      getPlayListData();
+      getPlayListDataNew();
     } else {
       getData();
     }
@@ -185,7 +274,6 @@ class _SearchPrayerState extends State<SearchPrayer> {
   //     print("updated[0]['download'] " + download.toString());
   //   });
   // }
-
   showAlert(BuildContext context, amount, msg, data) {
     // set up the button
     // set up the AlertDialog
@@ -197,14 +285,14 @@ class _SearchPrayerState extends State<SearchPrayer> {
       disp_amount = "5.99";
     }
     AlertDialog alert = AlertDialog(
-      backgroundColor: Color(0xff252525),
+      backgroundColor: c.bgColor(),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             "Download Prayer",
-            style:
-                TextStyle(color: c.primaryColor(), fontWeight: FontWeight.w800),
+            textAlign: TextAlign.start,
+            style: TextStyle(color: c.getPink(), fontWeight: FontWeight.w800),
           ),
           GestureDetector(
               onTap: () {
@@ -218,7 +306,7 @@ class _SearchPrayerState extends State<SearchPrayer> {
       ),
       content: Text(
         "$msg",
-        style: TextStyle(color: c.primaryColor()),
+        style: TextStyle(color: c.whiteColor()),
       ),
       actions: [
         Row(
@@ -228,14 +316,16 @@ class _SearchPrayerState extends State<SearchPrayer> {
               width: MediaQuery.of(context).size.width * 0.35,
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: c.primaryColor(),
-                border: Border.all(width: 1.0, color: c.primaryColor()),
+                // color: c.primaryColor(),
+                border: Border.all(width: 2.0, color: c.getPink()),
                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
               ),
               child: TextButton(
                 child: Text(
                   "Upgrade Account",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: c.getFontSizeXS(context) - 3),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -247,14 +337,17 @@ class _SearchPrayerState extends State<SearchPrayer> {
               width: MediaQuery.of(context).size.width * 0.35,
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: c.primaryColor(),
+                // color: c.primaryColor(),
+                gradient: c.buttonGradient(),
                 border: Border.all(width: 1.0, color: c.primaryColor()),
                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
               ),
               child: TextButton(
                 child: Text(
                   "Pay \$$disp_amount ",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: c.getFontSizeXS(context) - 3),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop("cancel");
@@ -330,12 +423,12 @@ class _SearchPrayerState extends State<SearchPrayer> {
                             }
                             allData = [];
                             for (int d = 0; d < temp_data.length; d++) {
-                              print(temp_data[d]['album'].toString());
+                              print(temp_data[d]['t'].toString());
                               print(s.toString());
                               if (s.toString() == 'All' ||
                                   s.toString() == 'Select Category') {
                                 allData.add(temp_data[d]);
-                              } else if (temp_data[d]['album']
+                              } else if (temp_data[d]['t']
                                   .toString()
                                   .toLowerCase()
                                   .contains(s.toString().toLowerCase())) {
@@ -400,13 +493,12 @@ class _SearchPrayerState extends State<SearchPrayer> {
                                     0.1), // Image radius
                                 child: Image.asset(
                                   "assets/slider/" +
-                                      c.filename(
-                                          allData[j]['album'].toString()),
+                                      c.filename(allData[j]['c'].toString()),
                                 ),
                               ),
                             ),
                             title: AutoSizeText(
-                              allData[j]['album'],
+                              allData[j]['t'] ?? "",
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: c.getFontSizeSmall(context),
@@ -439,7 +531,7 @@ class _SearchPrayerState extends State<SearchPrayer> {
                                               color: c.getColor("red")),
                                         ),
                                   AutoSizeText(
-                                    allData[j]['artist'],
+                                    allData[j]['c'] ?? "",
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                         fontSize:
@@ -476,58 +568,87 @@ class _SearchPrayerState extends State<SearchPrayer> {
                                             "Upgrade your account to access download feature\nOr pay \$9.99 to download this prayer",
                                             allData[j]);
                                       } else {
-                                        print("DSonloads is $download");
-                                        if (download > 0) {
-                                          c.showInSnackBar(context,
-                                              "Prayer is being downloaded and it will be saved in My Downloads");
-                                          c
-                                              .download1(
-                                                  dio,
-                                                  allData[j]['url'],
-                                                  '/' +
-                                                      allData[j]['album']
-                                                          .toString()
-                                                          .replaceAll(
-                                                              " ", "_") +
-                                                      ".mp3")
-                                              .then((value) {
-                                            print("downloaded to $value");
-
-                                            //  var rec = '{"downloaded":}';
-                                            var rec =
-                                                '{"url":"$value","allbum":"${(allData[j]['album'].toString())}","artist":"${(allData[j]['artist'])}","duration":"${(allData[j]['duration'])}"},';
-                                            c
-                                                .getshared("downlaods")
-                                                .then((value) {
-                                              if (value != 'null') {
-                                                value = value + rec;
-                                                c.setshared("downlaods", value);
+                                        var diff = DateTime.now()
+                                            .difference(subscribed_on)
+                                            .inDays;
+                                        if (diff <
+                                            int.parse(for_days.toString())) {
+                                          var limitextender = 1;
+                                          for (int i = 30;
+                                              i < 365;
+                                              i = i + 30) {
+                                            print("\n\n\ Loop now is $i");
+                                            if (diff < i) {
+                                              if (download >=
+                                                  (mon_donwload_limit *
+                                                      limitextender)) {
+                                                //8>7
+                                                c.showInSnackBar(context,
+                                                    "You have reached maximum download limit for this month");
+                                                showAlert(
+                                                    context,
+                                                    "599",
+                                                    "Maximum download limit reached!\nPay \$5.99 to download this prayer",
+                                                    allData[j]);
+                                                break;
                                               } else {
-                                                c.setshared("downlaods", rec);
-                                              }
-                                            });
-                                            c
-                                                .getshared("downlaods")
-                                                .then((value) {
-                                              print(
-                                                  "Here affter downlaodsa $value");
-                                            });
-                                            c.updatedDownload(
-                                                download - 1, doc_id);
+                                                print(
+                                                    "Donwloading this ${(allData[j])}");
+                                                //this will run
+                                                c
+                                                    .updatedDownload(
+                                                        download + 1, doc_id)
+                                                    .then((value) {
+                                                  c.showInSnackBar(context,
+                                                      "Prayer is being downloaded and it will be saved in My Downloads");
+                                                  c
+                                                      .download1(
+                                                          dio,
+                                                          allData[j]['u'],
+                                                          '/' +
+                                                              allData[j]['t']
+                                                                  .toString()
+                                                                  .replaceAll(
+                                                                      " ",
+                                                                      "_") +
+                                                              ".mp3")
+                                                      .then((value) {
+                                                    print(
+                                                        "downloaded to $value");
 
-                                            // c.setshared("Downloaded1", rec);
-                                          });
-                                        } else {
-                                          c.showInSnackBar(context,
-                                              "You have reached maximum download limit");
-                                          showAlert(
-                                              context,
-                                              "599",
-                                              "You have reached maximum download limit\nOr pay \$5.99 to download this prayer",
-                                              allData[j]);
+                                                    //  var rec = '{"downloaded":}';
+                                                    var rec =
+                                                        '{"url":"$value","allbum":"${(allData[j]['t'].toString())}","artist":"${(allData[j]['c'])}","duration":"${(allData[j]['duration'])}"},';
+                                                    c
+                                                        .getshared("downlaods")
+                                                        .then((value) {
+                                                      if (value != 'null') {
+                                                        value = value + rec;
+                                                        c.setshared(
+                                                            "downlaods", value);
+                                                      } else {
+                                                        c.setshared(
+                                                            "downlaods", rec);
+                                                      }
+                                                    });
+                                                    c
+                                                        .getshared("downlaods")
+                                                        .then((value) {
+                                                      print(
+                                                          "Here affter downlaodsa $value");
+                                                    });
+
+                                                    // c.setshared("Downloaded1", rec);
+                                                  });
+                                                });
+                                                break;
+                                              }
+                                            }
+                                            limitextender += 1;
+                                          }
+
+                                          getData();
                                         }
-                                        // getStatics();
-                                        getData();
                                       }
                                     },
                                     child: Icon(
@@ -587,26 +708,63 @@ class _SearchPrayerState extends State<SearchPrayer> {
   }
 
   play_audio(loop_id) {
-    if (play > 0) {
-      c.updatedPlay(play - 1, doc_id).then((value) {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => AudioPlayerPage(
-                      data: loop_id,
-                    )));
-      });
+    if (isPremimum == false) {
+      if (play > 0) {
+        c.updatedPlay(play - 1, doc_id).then((value) {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => MyPlayer(
+                        data: loop_id,
+                      )));
+        });
+      } else {
+        c.showInSnackBar(context,
+            "You have listen to maximum free prayers, Upgrade your account to continue");
+        Future.delayed(Duration(milliseconds: 1200), () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => Profile(
+                        showSheet: true,
+                      )));
+        });
+      }
     } else {
-      c.showInSnackBar(context,
-          "You have listen to maximum free prayers, Upgrade your account to continue");
-      Future.delayed(Duration(milliseconds: 1200), () {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => Profile(
-                      showSheet: true,
-                    )));
-      });
+      var diff = DateTime.now().difference(subscribed_on).inDays;
+      print("Diff is $diff");
+      if (diff < int.parse(for_days.toString())) {
+        var limitextender = 1;
+        for (int i = 30; i < 365; i = i + 30) {
+          print("\n\n\ Loop now is $i");
+          if (diff < i) {
+            // print(play);
+            // print(mon_play_limit);
+            // print((mon_play_limit * limitextender));
+            print(play >= (mon_play_limit * limitextender));
+
+            if (play >= (mon_play_limit * limitextender)) {
+              //8>7
+              c.showInSnackBar(context,
+                  "You have listen to maximum free prayers for this month");
+
+              break;
+            } else {
+              //this will run
+              c.updatedPlay(play + 1, doc_id).then((value) {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => MyPlayer(
+                              data: loop_id,
+                            )));
+              });
+              break;
+            }
+          }
+          limitextender += 1;
+        }
+      }
     }
   }
   // play(dataloop) {
@@ -723,14 +881,14 @@ class _SearchPrayerState extends State<SearchPrayer> {
         c.showInSnackBar(context,
             "Prayer is being downloaded and it will be saved in My Downloads");
         c
-            .download1(dio, allData['url'],
+            .download1(dio, allData['u'],
                 '/' + allData['album'].toString().replaceAll(" ", "_") + ".mp3")
             .then((value) {
           print("downloaded to $value");
 
           //  var rec = '{"downloaded":}';
           var rec =
-              '{"url":"$value","allbum":"${(allData['album'].toString())}","artist":"${(allData['artist'])}","duration":"${(allData['duration'])}"},';
+              '{"url":"$value","allbum":"${(allData['t'].toString())}","artist":"${(allData['c'])}","duration":"${(allData['duration'])}"},';
           c.getshared("downlaods").then((value) {
             if (value != 'null') {
               value = value + rec;

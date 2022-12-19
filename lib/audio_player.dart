@@ -289,7 +289,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
     player = AudioPlayer();
     player.setLoopMode(LoopMode.one);
     setState(() {
-      audio_url = widget.data['url'];
+      audio_url = widget.data['u'];
     });
     c.getshared("UserName").then((value) {
       setState(() {
@@ -301,7 +301,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
         }
       });
     });
-    player.setUrl(widget.data['url']).then((_) {
+    player.setUrl(widget.data['u']).then((_) {
       if (mounted)
         setState(() {
           _ready = true;
@@ -342,6 +342,8 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
   }
 
   Future<bool> _exitApp(BuildContext context) async {
+    player.stop();
+    player.dispose();
     Navigator.push(context, CupertinoPageRoute(builder: (context) => Home()));
     return Future.value(false);
   }
@@ -382,6 +384,8 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  player.stop();
+                                  player.dispose();
                                   Navigator.push(
                                       context,
                                       CupertinoPageRoute(
@@ -432,7 +436,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             AutoSizeText(
-                              widget.data['album'],
+                              widget.data['t'],
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: c.getFontSizeLarge(context),
@@ -445,7 +449,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             AutoSizeText(
-                              widget.data['artist'],
+                              widget.data['c'],
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: c.getFontSizeSmall(context),
@@ -461,9 +465,9 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                                 min: 0.0,
                                 activeColor: c.primaryColor(),
                                 max: double.parse(
-                                    player.duration!.inSeconds.toString()),
+                                    player.duration!.inMinutes.toString()),
                                 value: player.position.inSeconds,
-                                interval: 0.01,
+                                interval: 0.1,
                                 enableTooltip: true,
                                 minorTicksPerInterval: 1,
                                 onChanged: (dynamic value) async {
@@ -485,7 +489,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("00:" + player.position.inSeconds.toString(),
+                              Text("00:" + player.position.inMinutes.toString(),
                                   style: TextStyle(
                                       fontSize: c.getFontSizeSmall(context),
                                       fontWeight: FontWeight.w800,

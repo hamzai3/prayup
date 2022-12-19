@@ -144,6 +144,34 @@ class Constants {
       return 'studies.png';
     } else if (str.toString().toLowerCase().contains("wife")) {
       return 'wife.png';
+    } else if (str.toString().toLowerCase().contains("anniversary")) {
+      return 'anniversary.png';
+    } else if (str.toString().toLowerCase().contains("business")) {
+      return 'business.png';
+    } else if (str.toString().toLowerCase().contains("employment")) {
+      return 'employment.png';
+    } else if (str.toString().toLowerCase().contains("failure")) {
+      return 'failure.png';
+    } else if (str.toString().toLowerCase().contains("fear")) {
+      return 'fear.png';
+    } else if (str.toString().toLowerCase().contains("finance")) {
+      return 'finance.png';
+    } else if (str.toString().toLowerCase().contains("insomnia")) {
+      return 'insomnia.png';
+    } else if (str.toString().toLowerCase().contains("jobs")) {
+      return 'jobs.png';
+    } else if (str.toString().toLowerCase().contains("marriage")) {
+      return 'marriage.png';
+    } else if (str.toString().toLowerCase().contains("nightmares")) {
+      return 'nightmares.png';
+    } else if (str.toString().toLowerCase().contains("parents")) {
+      return 'parents.png';
+    } else if (str.toString().toLowerCase().contains("success")) {
+      return 'success.png';
+    } else if (str.toString().toLowerCase().contains("wisdom")) {
+      return 'wisdom.png';
+    } else if (str.toString().toLowerCase().contains("children")) {
+      return 'children.png';
     } else {
       return 'faith.png';
     }

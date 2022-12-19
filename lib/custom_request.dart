@@ -62,7 +62,7 @@ class _CustomRequestState extends State<CustomRequest> {
           "name": fname.text,
           "r_email": recipent_email.text,
           "category": selected_cat,
-          "r_gender": gender.text,
+          "r_gender": gender_val,
           "rf_name": recipent_fname.text,
           "rf_lname": recipent_lname.text,
         });
@@ -148,20 +148,20 @@ class _CustomRequestState extends State<CustomRequest> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Padding(
-                      //   padding: EdgeInsets.all(7),
-                      //   child: Container(
-                      //     child: Padding(
-                      //       padding:
-                      //           EdgeInsets.only(left: 20, right: 20, top: 20),
-                      //       child: Container(
-                      //           child: Image.asset(
-                      //         "assets/logo.png",
-                      //         width: c.deviceWidth(context) * 0.3,
-                      //       )),
-                      //     ),
-                      //   ),
-                      // ),
+                      Padding(
+                        padding: EdgeInsets.all(7),
+                        child: Container(
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(left: 20, right: 20, top: 20),
+                            child: Container(
+                                child: Image.asset(
+                              "assets/logo.png",
+                              width: c.deviceWidth(context) * 0.3,
+                            )),
+                          ),
+                        ),
+                      ),
                       c.getDivider(20.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -518,7 +518,6 @@ class _CustomRequestState extends State<CustomRequest> {
                           ),
                         ],
                       ),
-
                       Padding(
                         padding: EdgeInsets.only(
                             left: MediaQuery.of(context).size.height * 0.02,

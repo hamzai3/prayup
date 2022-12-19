@@ -10,7 +10,7 @@ import 'package:terry/NoInternet.dart';
 import 'package:terry/bottomNav.dart';
 import 'package:terry/constants.dart';
 import 'package:terry/register.dart';
-import 'package:terry/requestedPrayerPlayer.dart';
+import 'package:terry/requestedPrayerPlayerNew.dart';
 
 class RequestedPrayers extends StatefulWidget {
   @override
@@ -117,16 +117,16 @@ class _RequestedPrayersState extends State<RequestedPrayers> {
       // print("Final array ");
       // print(temp);
       // isLoading = false;
-      // if (data![0]['status'] == "failed") {
-      //   setState(() {
-      //     // isLoading = false;
-      //     no_records = true;
-      //   });
-      // } else if (data![0]['status'] == "success") {
-      //   setState(() {
-      //     // isLoading = false;
-      //   });
-      // }
+      if (temp[0]['status'] == "failed") {
+        setState(() {
+          // isLoading = false;
+          no_records = true;
+        });
+      } else if (temp[0]['status'] == "success") {
+        setState(() {
+          // isLoading = false;
+        });
+      }
     });
   }
 
@@ -172,7 +172,7 @@ class _RequestedPrayersState extends State<RequestedPrayers> {
           : no_records
               ? Center(
                   child: Text(
-                    "No Notifications Found",
+                    "There are no prayers",
                     style: TextStyle(
                       color: c.getColor("light_black"),
                       fontSize: c.getFontSizeLarge(context) - 10,
@@ -218,6 +218,7 @@ class _RequestedPrayersState extends State<RequestedPrayers> {
                                           text: (temp[i]['prayer_name']
                                               .toString()),
                                           style: TextStyle(
+                                              color: Colors.white,
                                               fontWeight: FontWeight.bold,
                                               fontFamily: c.fontFamily()),
                                         ),
@@ -227,6 +228,7 @@ class _RequestedPrayersState extends State<RequestedPrayers> {
                                   subtitle: Text.rich(
                                     TextSpan(
                                       style: TextStyle(
+                                          color: c.whiteColor(),
                                           fontSize:
                                               c.getFontSizeSmall(context) - 3,
                                           fontFamily: c.fontFamily()),

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:terry/SamplePlayer.dart';
 import 'package:terry/audio_player.dart';
 import 'package:terry/audio_player_offline.dart';
 import 'package:terry/bottomNav.dart';
@@ -140,12 +141,12 @@ class _MyDownloadsState extends State<MyDownloads> {
                             }
                             allData = [];
                             for (int d = 0; d < temp_data.length; d++) {
-                              print(temp_data[d]['album'].toString());
+                              print(temp_data[d]['allbum'].toString());
                               print(s.toString());
                               if (s.toString() == 'All' ||
                                   s.toString() == 'Select Category') {
                                 allData.add(temp_data[d]);
-                              } else if (temp_data[d]['album']
+                              } else if (temp_data[d]['allbum']
                                   .toString()
                                   .toLowerCase()
                                   .contains(s.toString().toLowerCase())) {
@@ -216,7 +217,9 @@ class _MyDownloadsState extends State<MyDownloads> {
                                         c.deviceWidth(context) *
                                             0.1), // Image radius
                                     child: Image.asset(
-                                      "assets/slider/${(random.nextInt(4) + 1)}.png",
+                                      "assets/slider/" +
+                                          c.filename(
+                                              allData[j]['artist'].toString()),
                                     ),
                                   ),
                                 ),
@@ -254,9 +257,9 @@ class _MyDownloadsState extends State<MyDownloads> {
                                   Navigator.push(
                                       context,
                                       CupertinoPageRoute(
-                                          builder: (context) =>
-                                              AudioPlayerPageOffline(
+                                          builder: (context) => MyPlayerOffline(
                                                 data: allData[j],
+                                                route: 'N',
                                               )));
                                 },
                               ),

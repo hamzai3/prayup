@@ -122,7 +122,7 @@ class _RegisterState extends State<Register> {
                             child: Container(
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    left: 20, right: 20, top: 20),
+                                    left: 20, right: 20, top: 50),
                                 child: Container(
                                     child: Image.asset(
                                   "assets/logo.png",
