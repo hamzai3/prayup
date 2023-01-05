@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Future.delayed(Duration(seconds: 4), () {
           Navigator.push(context, CupertinoPageRoute(builder: (_) => Login()));
         });
-      }
+      } 
     });
   }
 
